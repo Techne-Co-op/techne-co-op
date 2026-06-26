@@ -118,6 +118,18 @@
 
   .foot{border-top:1px solid var(--rule);margin-top:var(--s8);padding:var(--s5) 0 var(--s8);font:400 11px/1.7 var(--mono);color:var(--faint);}
   .foot b{color:var(--muted);font-weight:500;}
+  .foot a{color:var(--blue-text);text-decoration:none;}
+  .foot a:hover{text-decoration:underline;}
+
+  /* artifact nav strip */
+  .artnav{display:flex;gap:var(--s3);flex-wrap:wrap;margin-top:var(--s5);padding:var(--s3) 0;border-top:1px solid var(--line);}
+  .artnav-label{font:500 9px/1.6 var(--mono);color:var(--faint);text-transform:uppercase;letter-spacing:.1em;align-self:center;white-space:nowrap;}
+  .artnav-link{display:inline-flex;flex-direction:column;gap:3px;padding:9px 13px;border:1px solid var(--line);background:var(--surface);text-decoration:none;transition:border-color var(--micro) var(--ease),background-color var(--micro) var(--ease);}
+  .artnav-link:hover{border-color:var(--rule);background:var(--raised);}
+  .artnav-link .al-tag{font:500 9px/1 var(--mono);color:var(--faint);text-transform:uppercase;letter-spacing:.08em;}
+  .artnav-link .al-title{font:600 13px/1.3 var(--serif);color:var(--heading);}
+  .artnav-link .al-desc{font:400 11px/1.4 var(--mono);color:var(--muted);}
+  .artnav-link:hover .al-title{color:var(--blue-text);}
 
   @media (max-width:620px){
     .mast h1{font-size:31px;}
@@ -145,6 +157,19 @@
     </div>
     <div class="band">
       <span style="background:var(--sun-gold)"></span><span style="background:var(--sun-amber)"></span><span style="background:var(--sun-coral)"></span><span style="background:var(--sun-rose)"></span><span style="background:var(--sun-violet)"></span><span style="background:var(--sun-blue)"></span>
+    </div>
+    <div class="artnav">
+      <span class="artnav-label">Interactive artifacts</span>
+      <a class="artnav-link" href="./two-layers/">
+        <span class="al-tag">Bloom visualization</span>
+        <span class="al-title">Settled &amp; Ripening</span>
+        <span class="al-desc">Two layers &middot; open matters &middot; live landing</span>
+      </a>
+      <a class="artnav-link" href="./onboarding/">
+        <span class="al-tag">Guided introduction</span>
+        <span class="al-title">A guided introduction</span>
+        <span class="al-desc">6-step journey &middot; guest to first reflection</span>
+      </a>
     </div>
   </header>
 

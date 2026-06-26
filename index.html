@@ -85,6 +85,7 @@
 
   /* module cards */
   .modules{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4);margin-top:var(--s4)}
+  .modules.four{grid-template-columns:1fr 1fr}
   @media(max-width:580px){.modules{grid-template-columns:1fr}}
   .mod{background:var(--surface);border:1px solid var(--line);padding:var(--s4) var(--s5)}
   .mod a{text-decoration:none;color:inherit;display:block;height:100%}
@@ -204,7 +205,7 @@
   <section class="sec">
     <div class="sec-label">Documents</div>
     <h2>Concept artifacts</h2>
-    <div class="modules">
+    <div class="modules four">
 
       <div class="mod">
         <a href="./common-work/">
@@ -230,6 +231,34 @@
             <span class="mod-tag-sm">REA ontology</span>
             <span class="mod-tag-sm">Ripening lifecycle</span>
             <span class="mod-tag-sm">Rhythm view</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="mod">
+        <a href="./daybook/two-layers/">
+          <div class="mod-tag">Interactive artifact &middot; Daybook</div>
+          <div class="mod-title">Settled &amp; Ripening</div>
+          <div class="mod-desc">The two-layer bloom: solid petals for what the co-op has made public, outline petals for open matters filling 0–100% toward a decision. <em>A person lands it — the bloom does not fill itself.</em></div>
+          <div class="mod-meta">
+            <span class="mod-tag-sm">Two layers</span>
+            <span class="mod-tag-sm">Ripening matters</span>
+            <span class="mod-tag-sm">Sunrise clock</span>
+            <span class="mod-tag-sm">Live landing</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="mod">
+        <a href="./daybook/onboarding/">
+          <div class="mod-tag">Interactive artifact &middot; Daybook</div>
+          <div class="mod-title">Guided Introduction</div>
+          <div class="mod-desc">A six-step onboarding journey from guest observer to first reflection. Observe the cooperative's rhythm, learn the four kinds, write a private entry, and see what still requires membership standing. <em>Learn by doing.</em></div>
+          <div class="mod-meta">
+            <span class="mod-tag-sm">6-step journey</span>
+            <span class="mod-tag-sm">Progressive access</span>
+            <span class="mod-tag-sm">Private daybook</span>
+            <span class="mod-tag-sm">Membership path</span>
           </div>
         </a>
       </div>

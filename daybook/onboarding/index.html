@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="The Daybook — a guided introduction. A first-time guest learns the tool by progressive revelation, from observing the cooperative's rhythm to landing their own first reflection. Techne Design System v4.">
+<meta name="robots" content="noindex,nofollow">
+<title>The Daybook &middot; a guided introduction &middot; Techne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --serif:"Libre Baskerville",Georgia,serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+    --dur:.4s;--micro:.16s;--ease:cubic-bezier(.4,0,.2,1);
+    --sun-gold:#EAB668;--sun-amber:#E09A52;--sun-coral:#D1755A;--sun-rose:#B45C7C;--sun-violet:#6E5494;--sun-blue:#5476B8;
+  }
+  html[data-mode="dark"]{
+    --bg:#0F0F12;--inset:#08080A;--surface:#16161B;--raised:#232329;
+    --line:#2A2A30;--rule:#3A3A42;
+    --heading:#E8E4DF;--text:#CFCBC4;--muted:#8A857E;--faint:#5A554F;
+    --blue:#6A8AC4;--blue-text:#97B5E8;--ember:#C4956A;--ember-text:#D4A57A;
+    --ok:#6A9A6A;--warn:#C46A6A;--petal:.5;
+  }
+  html[data-mode="light"]{
+    --bg:#F7F5F0;--inset:#EBE7DF;--surface:#FCFBF8;--raised:#FEFDFB;
+    --line:#D8D3C8;--rule:#9A958A;
+    --heading:#1A1A1F;--text:#2E2C28;--muted:#646058;--faint:#A39E92;
+    --blue:#4A6FB0;--blue-text:#39588F;--ember:#8A6A4A;--ember-text:#6F5436;
+    --ok:#4A7A4A;--warn:#A84F4C;--petal:.64;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:dark light;}
+  html,body{height:100%;}
+  body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.7 var(--serif);
+    transition:background-color var(--dur) var(--ease),color var(--dur) var(--ease);overflow:hidden;}
+  em{font-style:italic;color:var(--heading);}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:3px;}
+  ::selection{background:var(--blue);color:var(--bg);}
+  button{font-family:inherit;}
+
+  .app{height:100%;display:grid;grid-template-rows:auto 1fr auto;}
+
+  /* header */
+  .head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:16px 28px 14px;border-bottom:1px solid var(--line);}
+  .head .nm{font:700 17px/1 var(--serif);color:var(--heading);letter-spacing:-.01em;}
+  .head .nm small{font:400 11px/1 var(--mono);color:var(--muted);text-transform:lowercase;letter-spacing:.04em;margin-left:11px;}
+  .head .rt{display:flex;align-items:center;gap:18px;}
+  .head .stepn{font:500 10px/1 var(--mono);color:var(--faint);letter-spacing:.06em;}
+  .modebtn{font:500 11px/1 var(--mono);color:var(--muted);background:none;border:0;cursor:pointer;padding:4px 2px;letter-spacing:.03em;}
+  .modebtn:hover{color:var(--heading);}
+
+  /* body grid: rail | canvas | reading */
+  .body{display:grid;grid-template-columns:212px 1fr 384px;min-height:0;}
+
+  /* rail */
+  .rail{border-right:1px solid var(--line);padding:22px 18px;display:flex;flex-direction:column;gap:3px;overflow-y:auto;}
+  .rail .rk{font:600 9px/1 var(--mono);color:var(--faint);text-transform:uppercase;letter-spacing:.13em;margin:0 0 12px;}
+  .rstep{display:grid;grid-template-columns:22px 1fr;gap:11px;align-items:center;padding:9px 8px;border-radius:2px;border:1px solid transparent;text-align:left;background:none;cursor:default;width:100%;transition:border-color var(--micro) var(--ease),background-color var(--micro) var(--ease);}
+  .rstep.clickable{cursor:pointer;}
+  .rstep.clickable:hover{background:var(--surface);}
+  .rstep.on{border-color:var(--rule);background:var(--surface);}
+  .rstep .dot svg{width:20px;height:14px;overflow:visible;display:block;}
+  .rstep .rt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .rstep .tt{font:500 11.5px/1.25 var(--serif);color:var(--muted);}
+  .rstep.on .tt,.rstep.done .tt{color:var(--heading);}
+  .rstep .ph{font:400 8.5px/1.1 var(--mono);color:var(--faint);text-transform:uppercase;letter-spacing:.06em;}
+  .rstep.upcoming{opacity:.42;}
+  .rail .acct{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);font:400 9.5px/1.5 var(--mono);color:var(--faint);letter-spacing:.02em;}
+  .rail .acct b{color:var(--muted);font-weight:500;}
+  .rail .acct .role{color:var(--ember-text);}
+
+  /* canvas */
+  .canvas{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:18px 24px;min-width:0;min-height:0;}
+  .bloom{width:100%;display:flex;justify-content:center;}
+  .bloom svg{width:100%;max-width:440px;max-height:min(440px,56vh);height:auto;overflow:visible;}
+  .aux{width:100%;max-width:460px;min-height:34px;}
+  .kinds{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;}
+  .kchip{display:inline-flex;align-items:center;gap:8px;font:500 10px/1 var(--mono);color:var(--muted);border:1px solid var(--line);border-radius:2px;padding:7px 10px;opacity:0;transform:translateY(4px);transition:opacity var(--dur) var(--ease),transform var(--dur) var(--ease),border-color var(--micro) var(--ease),color var(--micro) var(--ease);}
+  .kchip.show{opacity:1;transform:none;}
+  .kchip .sw{width:13px;height:8px;border-radius:1px;}
+  .kchip .win{color:var(--faint);font-size:8.5px;letter-spacing:.04em;}
+  .kchip.locked{color:var(--faint);}
+  .kchip.locked .sw{opacity:.4;}
+  .auxnote{text-align:center;font:400 10px/1.5 var(--mono);color:var(--faint);letter-spacing:.02em;max-width:460px;margin:0 auto;}
+  .auxnote em{color:var(--ember-text);font-style:normal;}
+
+  /* reading panel */
+  .read{border-left:1px solid var(--line);padding:30px 30px 24px;display:flex;flex-direction:column;overflow-y:auto;min-height:0;}
+  .read .kick{font:600 9.5px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;color:var(--ember-text);display:inline-flex;align-items:center;gap:7px;margin:0 0 14px;}
+  .read .kick .tk{width:14px;height:2px;background:var(--ember);}
+  .read h1{font:700 26px/1.18 var(--serif);color:var(--heading);letter-spacing:-.01em;margin:0 0 13px;}
+  .read .copy{font:400 15px/1.68 var(--serif);color:var(--text);margin:0 0 18px;}
+  .read .copy em{color:var(--heading);}
+  .read .copy.small{font-size:13.5px;line-height:1.6;color:var(--muted);}
+
+  .grant{border:1px solid var(--line);border-radius:2px;padding:13px 15px;margin:0 0 18px;font:400 11px/1.6 var(--mono);}
+  .grant .gr{display:grid;grid-template-columns:64px 1fr;gap:10px;padding:4px 0;}
+  .grant .gr .gk{color:var(--faint);text-transform:uppercase;letter-spacing:.05em;font-size:9px;padding-top:2px;}
+  .grant .gr .gv{color:var(--text);}
+  .grant .gr.no .gv{color:var(--muted);}
+  .grant .gr .ic{display:inline-flex;vertical-align:-1px;margin-right:5px;}
+  .grant .gr.yes .ic{color:var(--ok);} .grant .gr.no .ic{color:var(--warn);}
+
+  /* registration card */
+  .card{display:flex;flex-direction:column;gap:11px;margin:0 0 18px;}
+  .fld{display:flex;flex-direction:column;gap:5px;}
+  .fld label{font:500 9px/1 var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:.07em;}
+  .fld input[type=text],.fld input[type=email]{font:400 14px/1.5 var(--serif);color:var(--heading);background:var(--inset);border:1px solid var(--line);border-radius:2px;padding:9px 11px;outline:none;}
+  .fld input:focus{border-color:var(--blue);}
+  .chk{display:grid;grid-template-columns:auto 1fr;gap:9px;align-items:start;font:400 11.5px/1.5 var(--mono);color:var(--muted);cursor:pointer;padding-top:2px;}
+  .chk input{margin-top:2px;accent-color:var(--blue);}
+
+  /* composer */
+  .comp{display:flex;flex-direction:column;gap:10px;margin:0 0 18px;}
+  .comp textarea{font:400 14.5px/1.6 var(--serif);color:var(--heading);background:var(--inset);border:1px solid var(--line);border-radius:2px;padding:11px 13px;outline:none;resize:none;min-height:84px;}
+  .comp textarea:focus{border-color:var(--blue);}
+  .comp .crow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;}
+  .privnote{font:400 10.5px/1.5 var(--mono);color:var(--faint);display:inline-flex;align-items:center;gap:6px;}
+  .privnote .ic{color:var(--muted);display:inline-flex;}
+  .privnote.pub .ic{color:var(--ok);}
+
+  /* buttons */
+  .acts{margin-top:auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding-top:8px;}
+  .btn{font:500 11px/1 var(--mono);border-radius:2px;height:34px;padding:0 16px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;letter-spacing:.03em;transition:background-color var(--micro) var(--ease),border-color var(--micro) var(--ease),color var(--micro) var(--ease);}
+  .btn svg{width:14px;height:14px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .btn.primary{color:var(--blue-text);background:none;border:1px solid var(--blue);}
+  .btn.primary:hover{background:var(--raised);}
+  .btn.ember{color:var(--ember-text);background:none;border:1px solid var(--ember);}
+  .btn.ember:hover{background:var(--raised);}
+  .btn.ghost{color:var(--muted);background:none;border:1px solid var(--line);}
+  .btn.ghost:hover{color:var(--heading);border-color:var(--rule);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  .btn.primary:disabled:hover,.btn.ember:disabled:hover{background:none;}
+
+  .pathlist{margin:0 0 18px;border:1px solid var(--line);border-radius:2px;}
+  .pathlist .pl{display:grid;grid-template-columns:18px 1fr;gap:10px;padding:9px 14px;border-bottom:1px solid var(--line);font:400 11.5px/1.5 var(--mono);color:var(--text);}
+  .pathlist .pl:last-child{border-bottom:0;}
+  .pathlist .pl .n{color:var(--ember-text);}
+  .pathlist .pl .src{color:var(--faint);font-size:9px;}
+
+  /* footer */
+  .foot{border-top:1px solid var(--line);padding:11px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .foot .cites{font:400 9.5px/1.5 var(--mono);color:var(--faint);letter-spacing:.02em;}
+  .foot .cites b{color:var(--muted);font-weight:500;}
+  .foot .proto{font:400 9.5px/1.4 var(--mono);color:var(--faint);font-style:italic;letter-spacing:.02em;}
+
+  @media (max-width:980px){
+    body{overflow:auto;}.app{height:auto;min-height:100%;}
+    .body{grid-template-columns:1fr;}
+    .rail{flex-direction:row;flex-wrap:wrap;border-right:0;border-bottom:1px solid var(--line);gap:8px;}
+    .rail .rk{width:100%;} .rail .acct{display:none;}
+    .rstep{width:auto;} .rstep .rt .ph{display:none;}
+    .read{border-left:0;border-top:1px solid var(--line);}
+    .bloom svg{max-height:none;max-width:380px;}
+    .acts{margin-top:18px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="head">
+    <div class="nm">The Daybook<small>a guided introduction</small></div>
+    <div class="rt">
+      <span class="stepn" id="stepn">step 1 of 6</span>
+      <button class="modebtn" id="modeBtn">light</button>
+    </div>
+  </header>
+
+  <div class="body">
+    <nav class="rail" id="rail" aria-label="journey">
+      <div class="rk">the journey</div>
+      <div id="railSteps"></div>
+      <div class="acct" id="acct">
+        you are a <span class="role" id="roleName">guest</span><br>
+        <span id="acctNote">no account &middot; observing only</span>
+      </div>
+    </nav>
+
+    <main class="canvas">
+      <div class="bloom"><svg id="dial" viewBox="0 0 440 440" role="img" aria-label="the daybook bloom"></svg></div>
+      <div class="aux" id="aux"></div>
+    </main>
+
+    <section class="read" id="read"></section>
+  </div>
+
+  <footer class="foot">
+    <span class="cites" id="cites"></span>
+    <span class="proto">A prototype. Registration here is illustrative: it opens a private daybook, not membership.</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement, mb=document.getElementById('modeBtn'), stored=null;
+  try{ stored=localStorage.getItem('daybook-onboard-mode'); }catch(e){}
+  var m=stored||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+  root.setAttribute('data-mode',m); mb.textContent=m==='dark'?'light':'dark';
+  mb.addEventListener('click',function(){var n=root.getAttribute('data-mode')==='dark'?'light':'dark';root.setAttribute('data-mode',n);mb.textContent=n==='dark'?'light':'dark';draw();});
+
+  /* ---------- bloom geometry (adapted from the Daybook surface) ---------- */
+  var SVGNS='http://www.w3.org/2000/svg';
+  var cx=220, cy=220, R=132, H=44, LBL=R+46;
+  function thOf(t){ return (t-12)*Math.PI/12; }
+  function pt(r,t){ var th=thOf(t); return {x:cx+r*Math.sin(th), y:cy-r*Math.cos(th)}; }
+  function ptA(r,a){ return {x:cx+r*Math.sin(a), y:cy-r*Math.cos(a)}; }
+  var dxh=Math.sqrt(R*R-H*H), thR=Math.atan2(dxh/R,-H/R);
+  var sunset=12+thR/(Math.PI/12), sunrise=12-thR/(Math.PI/12);
+  function clock(t){var h=Math.floor(t),mn=Math.round((t-h)*60);if(mn===60){h++;mn=0;}return (h<10?'0':'')+h+':'+(mn<10?'0':'')+mn;}
+  var GOLD=[234,182,104],AMBER=[224,154,82],CORAL=[209,117,90],ROSE=[180,92,124],VIOLET=[110,84,148];
+  var ramp=[[0,VIOLET],[sunrise,ROSE],[7,CORAL],[10.5,AMBER],[12.5,GOLD],[15,AMBER],[18,CORAL],[sunset,ROSE],[21.5,VIOLET],[24,VIOLET]];
+  function colorAt(t){t=((t%24)+24)%24;var a=ramp[0],b=ramp[ramp.length-1];for(var i=0;i<ramp.length-1;i++){if(t>=ramp[i][0]&&t<=ramp[i+1][0]){a=ramp[i];b=ramp[i+1];break;}}var f=(b[0]===a[0])?0:(t-a[0])/(b[0]-a[0]);var c=[0,1,2].map(function(k){return Math.round(a[1][k]+(b[1][k]-a[1][k])*f);});return 'rgb('+c[0]+','+c[1]+','+c[2]+')';}
+  function el(tag,a){var n=document.createElementNS(SVGNS,tag);for(var k in a)n.setAttribute(k,a[k]);return n;}
+  function petalPath(a,L,W){
+    var ax=Math.sin(a),ay=-Math.cos(a),px=Math.cos(a),py=Math.sin(a);var B=ptA(R,a);
+    function P(al,pe){return {x:B.x+ax*al+px*pe,y:B.y+ay*al+py*pe};}
+    var T=P(L,0),cA1=P(L*0.30,W),cA2=P(L*0.86,W*0.42),cB1=P(L*0.86,-W*0.42),cB2=P(L*0.30,-W);
+    return 'M '+B.x.toFixed(1)+' '+B.y.toFixed(1)+' C '+cA1.x.toFixed(1)+' '+cA1.y.toFixed(1)+' '+cA2.x.toFixed(1)+' '+cA2.y.toFixed(1)+' '+T.x.toFixed(1)+' '+T.y.toFixed(1)+' C '+cB1.x.toFixed(1)+' '+cB1.y.toFixed(1)+' '+cB2.x.toFixed(1)+' '+cB2.y.toFixed(1)+' '+B.x.toFixed(1)+' '+B.y.toFixed(1)+' Z';
+  }
+
+  /* the cooperative's sample rhythm (observed by a guest, stages 1-3) */
+  var coop={
+    reflection:{off:-0.04, col:null, data:[{h:5.5,w:2},{h:6.5,w:1},{h:20,w:2},{h:21.5,w:3},{h:22.5,w:2},{h:23,w:1}]},
+    contribution:{off:-0.014, data:[{h:9,w:1},{h:10,w:2},{h:11,w:2},{h:13,w:2},{h:14,w:3},{h:15,w:2},{h:16,w:1}]},
+    exchange:{off:0.014, data:[{h:9,w:2},{h:9.75,w:1},{h:10.5,w:2},{h:11,w:1},{h:11.5,w:1}]},
+    clearing:{off:0.04, data:[{h:21,w:1},{h:22,w:3},{h:22.5,w:2},{h:23,w:1}]}
+  };
+  var coopMatters=[
+    {kind:'clearing',off:0.04,h:22.2,ripe:0.22},{kind:'contribution',off:-0.014,h:14.0,ripe:0.5},
+    {kind:'exchange',off:0.014,h:11.5,ripe:0.78},{kind:'contribution',off:-0.014,h:15.5,ripe:1.0}
+  ];
+
+  var KINDS=[
+    {key:'reflection',label:'Reflection',win:'first light, evening',hue:colorAt(21),meaning:'narrative, kept outside the books'},
+    {key:'contribution',label:'Contribution',win:'working hours',hue:colorAt(14),meaning:'labor logged for the program'},
+    {key:'exchange',label:'Exchange',win:'mid-morning',hue:colorAt(10.5),meaning:'value moved or allocated'},
+    {key:'clearing',label:'Clearing',win:'night',hue:colorAt(22.5),meaning:'a settlement closed at day&rsquo;s end'}
+  ];
+
+  /* ---------- journey state ---------- */
+  var STEPS=[
+    {n:1,title:'The day the cooperative keeps',phase:'observe',role:'guest'},
+    {n:2,title:'Four kinds of entry',phase:'observe',role:'guest'},
+    {n:3,title:'Nothing posts itself',phase:'observe',role:'guest'},
+    {n:4,title:'Begin your daybook',phase:'register',role:'guest'},
+    {n:5,title:'Your first reflection',phase:'practice',role:'registered'},
+    {n:6,title:'The threshold',phase:'handoff',role:'registered'}
+  ];
+  var step=1, maxStep=1, registered=false, name='', myEntries=[], draft='', draftSaved=false;
+  var nowD=new Date(), tn=nowD.getHours()+nowD.getMinutes()/60;
+
+  /* ---------- draw the bloom ---------- */
+  function drawRing(){
+    while(dial.firstChild) dial.removeChild(dial.firstChild);
+    dial.appendChild(el('circle',{cx:cx,cy:cy,r:R,fill:'none',stroke:'var(--line)','stroke-width':1}));
+    var stops=['var(--sun-rose)','var(--sun-coral)','var(--sun-amber)','var(--sun-amber)','var(--sun-coral)','var(--sun-rose)'];
+    for(var i=0;i<6;i++){var s=-thR+(2*thR)*i/6,e2=-thR+(2*thR)*(i+1)/6,p0=ptA(R,s),p1=ptA(R,e2);
+      var pa=el('path',{d:'M '+p0.x.toFixed(1)+' '+p0.y.toFixed(1)+' A '+R+' '+R+' 0 0 1 '+p1.x.toFixed(1)+' '+p1.y.toFixed(1),fill:'none','stroke-width':2.5,'stroke-linecap':'round',opacity:.55});pa.style.stroke=stops[i];dial.appendChild(pa);}
+    dial.appendChild(el('line',{x1:cx-dxh,y1:cy+H,x2:cx+dxh,y2:cy+H,stroke:'var(--rule)','stroke-width':1,'stroke-dasharray':'2 5',opacity:.5}));
+    function card(t,label,dy){var lp=ptA(LBL,thOf(t));var tx=el('text',{x:lp.x.toFixed(1),y:(lp.y+(dy||0)).toFixed(1),'text-anchor':'middle',fill:'var(--muted)',font:'400 8.5px/1 var(--mono)'});tx.setAttribute('style','fill:var(--muted);font:400 8.5px/1 IBM Plex Mono,monospace;letter-spacing:.08em;text-transform:uppercase;');tx.textContent=label;dial.appendChild(tx);}
+    card(12,'noon',-2);card(sunrise,'sunrise',3);card(sunset,'sunset',3);card(0,'midnight',9);
+  }
+  function petalSolid(a,w,col){var L=15+w*7.5,W=4.5+w*2,p=el('path',{d:petalPath(a,L,W)});p.style.fill=col;p.style.opacity='var(--petal)';dial.appendChild(p);}
+  function petalOutline(a,ripe,col,dashed){var ew=1+ripe*2,L=15+ew*7.5,W=4.5+ew*2,d=petalPath(a,L,W);
+    if(ripe>0){var fp=el('path',{d:d});fp.style.fill=col;fp.style.opacity=(ripe*0.5).toFixed(3);dial.appendChild(fp);}
+    var ed=el('path',{d:d,fill:'none','stroke-width':dashed?1:1.25,opacity:dashed?.7:.65});ed.style.stroke=col;if(dashed)ed.setAttribute('stroke-dasharray','3 3');dial.appendChild(ed);}
+  function nowMark(){var io=pt(R-22,tn),oo=pt(R,tn);dial.appendChild(el('line',{x1:io.x.toFixed(1),y1:io.y.toFixed(1),x2:oo.x.toFixed(1),y2:oo.y.toFixed(1),stroke:'var(--rule)','stroke-width':1,'stroke-dasharray':'1 4',opacity:.5}));
+    var sp=pt(R,tn),sc=el('circle',{cx:sp.x.toFixed(1),cy:sp.y.toFixed(1),r:4});sc.style.fill='var(--surface)';sc.style.stroke='var(--sun-gold)';sc.style.strokeWidth='1.4';dial.appendChild(sc);
+    var nlp=ptA(LBL,thOf(tn)),nl=el('text',{x:nlp.x.toFixed(1),y:(nlp.y+3).toFixed(1),'text-anchor':'middle'});nl.setAttribute('style','fill:var(--faint);font:400 8px/1 IBM Plex Mono,monospace;letter-spacing:.1em;text-transform:uppercase;');nl.textContent='now';dial.appendChild(nl);}
+  function centerText(big,small){
+    var ct=el('text',{x:cx,y:cy+1,'text-anchor':'middle'});ct.setAttribute('style','fill:var(--heading);font:500 16px/1 IBM Plex Mono,monospace;letter-spacing:.02em;');ct.textContent=big;dial.appendChild(ct);
+    if(small){var cm=el('text',{x:cx,y:cy+18,'text-anchor':'middle'});cm.setAttribute('style','fill:var(--muted);font:400 8.5px/1 IBM Plex Mono,monospace;letter-spacing:.12em;text-transform:uppercase;');cm.textContent=small;dial.appendChild(cm);}
+  }
+
+  function draw(){
+    drawRing();
+    if(step<=3){
+      // the cooperative's bloom
+      Object.keys(coop).forEach(function(k){var ty=coop[k];ty.data.forEach(function(d){petalSolid(thOf(d.h)+ty.off,d.w,colorAt(d.h));});});
+      if(step>=3){coopMatters.forEach(function(mm){petalOutline(thOf(mm.h)+mm.off,mm.ripe,colorAt(mm.h),false);});}
+      centerText('the day', step>=3? 'theirs, ripening':'made public');
+    } else {
+      // your own bloom
+      myEntries.forEach(function(e){var a=thOf(e.h)+coop.reflection.off;if(e.pub)petalSolid(a,2,colorAt(e.h));else petalOutline(a,0.001,colorAt(e.h),true);});
+      nowMark();
+      var pubct=myEntries.filter(function(e){return e.pub;}).length;
+      centerText(myEntries.length? (name||'you'):'your day', myEntries.length? (pubct+' public'):'empty');
+    }
+  }
+
+  /* ---------- aux strip under the bloom ---------- */
+  function renderAux(){
+    var aux=document.getElementById('aux');
+    if(step===2||step===3){
+      aux.innerHTML='<div class="kinds">'+KINDS.map(function(k,i){return '<span class="kchip" data-i="'+i+'"><span class="sw" style="background:'+k.hue+'"></span>'+k.label+' <span class="win">'+k.win+'</span></span>';}).join('')+'</div>';
+      var chips=aux.querySelectorAll('.kchip');chips.forEach(function(c,i){setTimeout(function(){c.classList.add('show');},120*i);});
+    } else if(step===5){
+      aux.innerHTML='<div class="auxnote">a private entry sits as a <em>dashed outline</em>, seen only by you &middot; making it public opens a <em>solid petal</em> in the hour&rsquo;s colour</div>';
+    } else if(step===6){
+      var locked=KINDS.slice(1);
+      aux.innerHTML='<div class="kinds">'+locked.map(function(k){return '<span class="kchip locked show"><span class="sw" style="background:'+k.hue+'"></span>'+lockIco()+' '+k.label+'</span>';}).join('')+'</div>';
+    } else {
+      aux.innerHTML='';
+    }
+  }
+  function lockIco(){return '<svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;stroke-width:1.8;fill:none;vertical-align:-1px"><rect x="5" y="11" width="14" height="9" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';}
+  function ic(name){
+    var p={arrow:'M5 12h14M13 6l6 6-6 6',check:'M20 6 9 17l-5-5',eye:'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z|circle:12,12,3',feather:'M20 4 9 15M20 4c-7 0-13 6-13 13l4-2 4 1M14 10l-4 4',lock:'rect',back:'M19 12H5M11 18l-6-6 6-6',plus:'M12 5v14M5 12h14'};
+    return '<svg viewBox="0 0 24 24"><path d="'+(p[name]||'')+'"/></svg>';
+  }
+
+  /* ---------- reading panel per step ---------- */
+  function renderRead(){
+    var r=document.getElementById('read'), h='';
+    var s=STEPS[step-1];
+    h+='<div class="kick"><span class="tk"></span>'+s.phase+' &middot; step '+s.n+'</div>';
+    h+='<h1>'+s.title+'</h1>';
+
+    if(step===1){
+      h+='<p class="copy">Before you make anything, look at what is already here. Each petal is something a member made public, placed at the hour it happened, in the colour of that hour. The bloom tells you <em>when</em> and <em>how often</em>, and never <em>what</em>. You are looking at the cooperative&rsquo;s rhythm, and you need no account to see it.</p>';
+      h+=acts([{l:'Show me what gets recorded',cls:'primary',ic:'arrow',act:'next'}]);
+    } else if(step===2){
+      h+='<p class="copy">Everything here is one of four kinds. <em>Reflection</em> is narrative, kept outside the books. <em>Contribution</em> is labor logged. <em>Exchange</em> is value moved or allocated. <em>Clearing</em> is a settlement closed at day&rsquo;s end.</p>';
+      h+='<p class="copy small">Reflection sits outside the cooperative&rsquo;s accounts. The other three sit inside them. That line, between what touches the books and what does not, is the most consequential one in the whole system.</p>';
+      h+=acts([{l:'Back',cls:'ghost',ic:'back',act:'back'},{l:'How does something get here?',cls:'primary',ic:'arrow',act:'next'}]);
+    } else if(step===3){
+      h+='<p class="copy">An entry does not appear the instant it happens. It ripens as its conditions are met, an outline filling toward a decision, and then a person lands it. The fill is how close a thing is to settled, never what it says.</p>';
+      h+='<p class="copy"><em>The bloom does not fill itself.</em> This is the posture of the place: the tool prepares, and a person decides. Nothing is posted on anyone&rsquo;s behalf.</p>';
+      h+=acts([{l:'Back',cls:'ghost',ic:'back',act:'back'},{l:'Begin my own daybook',cls:'primary',ic:'arrow',act:'next'}]);
+    } else if(step===4){
+      h+='<p class="copy">To keep your own reflections, you need a place to keep them. This opens a private daybook in your name. It does <em>not</em> make you a member of the cooperative, and it grants no vote and no account. It gives you one thing: a daybook only you can read, until you choose otherwise.</p>';
+      h+='<div class="card">'+
+          '<div class="fld"><label for="fn">your name</label><input type="text" id="fn" value="'+escapeAttr(name)+'" placeholder="how you would like to be known"></div>'+
+          '<div class="fld"><label for="fe">a way to reach you</label><input type="email" id="fe" placeholder="email"></div>'+
+          '<label class="chk"><input type="checkbox" id="fc"><span>I understand my reflections are <em>private until I make them public</em>, and that this does not enroll me as a member.</span></label>'+
+        '</div>';
+      h+='<div class="grant">'+
+          '<div class="gr yes"><span class="gk">grants</span><span class="gv">'+chk()+'a private daybook, and the ability to make a reflection public</span></div>'+
+          '<div class="gr no"><span class="gk">does not</span><span class="gv">'+xic()+'membership, a capital account, a vote, or the economic kinds</span></div>'+
+        '</div>';
+      h+=acts([{l:'Back',cls:'ghost',ic:'back',act:'back'},{l:'Open my daybook',cls:'primary',ic:'arrow',act:'register',id:'regBtn',disabled:true}]);
+    } else if(step===5){
+      if(myEntries.length===0){
+        h+='<p class="copy">This is your day, and it is empty, because you have not begun. Write something small. It will sit private, seen by no one but you. Then, if you wish, make it public, and watch a petal open in the colour of this hour. The act of landing it is yours.</p>';
+      } else {
+        h+='<p class="copy">There it is, in your bloom. A private entry is a dashed outline; a public one is a solid petal. You have made an entry and decided its reach yourself. That is the entire grammar of the Daybook, learned at no cost to anyone.</p>';
+      }
+      h+='<div class="comp">'+
+          '<textarea id="ta" placeholder="a few words on the day so far">'+escapeHtml(draft)+'</textarea>'+
+          '<div class="crow" id="crow"></div>'+
+        '</div>';
+      var canNext=myEntries.some(function(e){return e.pub;});
+      h+=acts([{l:'Back',cls:'ghost',ic:'back',act:'back'},{l:'What is still closed to me?',cls:'primary',ic:'arrow',act:'next',disabled:!canNext}]);
+    } else if(step===6){
+      h+='<p class="copy">Reflection was yours to make alone. The other three kinds touch the cooperative&rsquo;s books, so they ask for standing you do not yet have.</p>';
+      h+='<p class="copy small"><em>Contribution</em> needs a capital account of your own. <em>Exchange</em> needs the circle&rsquo;s assent. <em>Clearing</em> needs both peers to confirm. The bar rises with how much of the commons an entry touches.</p>';
+      h+='<p class="copy small">Earning that standing is a longer road, and the Daybook only points the way. It is governed by the cooperative&rsquo;s onboarding and its bylaws, not by this surface.</p>';
+      h+='<div class="pathlist">'+
+          pl(1,'An application','§1.4')+pl(2,'The board&rsquo;s review','§III')+pl(3,'An admission vote','§12')+pl(4,'A share, and the agreements','§1.13, §XVI')+pl(5,'An orientation','§1.4 · orientation')+
+        '</div>';
+      h+=acts([{l:'Back',cls:'ghost',ic:'back',act:'back'},{l:'Return to my daybook',cls:'ghost',ic:'back',act:'goto5'},{l:'Begin the membership path',cls:'ember',ic:'arrow',act:'membership'}]);
+    }
+
+    r.innerHTML=h;
+    wireRead();
+  }
+
+  function pl(n,t,src){return '<div class="pl"><span class="n">'+n+'</span><span>'+t+' <span class="src">'+src+'</span></span></div>';}
+  function chk(){return '<span class="ic"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none"><path d="M20 6 9 17l-5-5"/></svg></span>';}
+  function xic(){return '<span class="ic"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none"><path d="M18 6 6 18M6 6l12 12"/></svg></span>';}
+  function acts(arr){
+    return '<div class="acts">'+arr.map(function(b){
+      return '<button class="btn '+b.cls+'" data-act="'+b.act+'"'+(b.id?' id="'+b.id+'"':'')+(b.disabled?' disabled':'')+'>'+b.l+ic(b.ic)+'</button>';
+    }).join('')+'</div>';
+  }
+  function escapeHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+  function escapeAttr(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+
+  function wireRead(){
+    document.querySelectorAll('.btn[data-act]').forEach(function(b){
+      b.addEventListener('click',function(){handleAct(b.dataset.act);});
+    });
+    if(step===4){
+      var fn=document.getElementById('fn'),fe=document.getElementById('fe'),fc=document.getElementById('fc'),rb=document.getElementById('regBtn');
+      function chkReg(){var ok=fn.value.trim().length>0 && fc.checked;rb.disabled=!ok;}
+      fn.addEventListener('input',function(){name=fn.value.trim();chkReg();});
+      fe.addEventListener('input',chkReg);fc.addEventListener('change',chkReg);chkReg();
+    }
+    if(step===5){
+      var ta=document.getElementById('ta');
+      ta.addEventListener('input',function(){draft=ta.value;draftSaved=false;renderCrow();});
+      renderCrow();
+    }
+  }
+  function renderCrow(){
+    var crow=document.getElementById('crow');if(!crow)return;
+    var has=draft.trim().length>0;
+    var last=myEntries.length? myEntries[myEntries.length-1]:null;
+    var h='';
+    if(!draftSaved){
+      h+='<button class="btn ghost" data-act="keep"'+(has?'':' disabled')+'>Keep private'+lockIcoBtn()+'</button>';
+      h+='<button class="btn ember" data-act="publish"'+(has?'':' disabled')+'>Make public'+ic('arrow')+'</button>';
+    } else if(last && !last.pub){
+      h+='<span class="privnote"><span class="ic">'+lockIcoBtn()+'</span>kept private &middot; only you can read it</span>';
+      h+='<button class="btn ember" data-act="publishlast">Make it public'+ic('arrow')+'</button>';
+    } else if(last && last.pub){
+      h+='<span class="privnote pub"><span class="ic"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;stroke-width:2;fill:none"><path d="M20 6 9 17l-5-5"/></svg></span>landed into your bloom, at '+clock(last.h)+'</span>';
+      h+='<button class="btn ghost" data-act="another">Write another'+ic('plus')+'</button>';
+    }
+    crow.innerHTML=h;
+    crow.querySelectorAll('.btn[data-act]').forEach(function(b){b.addEventListener('click',function(){handleAct(b.dataset.act);});});
+  }
+  function lockIcoBtn(){return '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';}
+
+  /* ---------- actions ---------- */
+  function handleAct(a){
+    if(a==='next'){ go(step+1); }
+    else if(a==='back'){ go(step-1); }
+    else if(a==='goto5'){ go(5); }
+    else if(a==='register'){ registered=true; go(5); }
+    else if(a==='keep'){ myEntries.push({h:tn,pub:false}); draftSaved=true; render(); }
+    else if(a==='publish'){ myEntries.push({h:tn,pub:true}); draftSaved=true; render(); }
+    else if(a==='publishlast'){ myEntries[myEntries.length-1].pub=true; render(); }
+    else if(a==='another'){ draft=''; draftSaved=false; render(); }
+    else if(a==='membership'){ /* prototype: would hand off to the CIS Onboarding module */ flashMembership(); }
+  }
+  function flashMembership(){
+    var r=document.getElementById('read');
+    var note=document.createElement('div');
+    note.className='copy small';note.style.color='var(--ember-text)';note.style.marginTop='14px';
+    note.innerHTML='In the live system, this hands off to the cooperative&rsquo;s onboarding flow. The Daybook&rsquo;s part is done: it has made you fluent in the tool and opened your private daybook.';
+    var acts=r.querySelector('.acts');if(acts && !r.querySelector('.handoffnote')){note.classList.add('handoffnote');r.insertBefore(note,acts);}
+  }
+
+  function go(nstep){
+    if(nstep<1||nstep>6)return;
+    if(nstep>4 && !registered){ nstep=4; } // the registration gate
+    step=nstep; if(step>maxStep)maxStep=step; render();
+  }
+
+  /* ---------- rail + chrome ---------- */
+  function renderRail(){
+    document.getElementById('railSteps').innerHTML=STEPS.map(function(s){
+      var state = s.n<step?'done':(s.n===step?'on':(s.n<=maxStep?'done':'upcoming'));
+      var clickable = s.n<=maxStep && s.n!==step;
+      var dot;
+      if(s.n<step||((s.n<=maxStep)&&s.n!==step)) dot='<svg viewBox="0 0 20 14"><path d="M2 7 C2 3 9 3 18 7 C9 11 2 11 2 7 Z" fill="var(--ember)" opacity="'+(s.n===step?'1':'.55')+'"/></svg>';
+      else if(s.n===step) dot='<svg viewBox="0 0 20 14"><path d="M2 7 C2 3 9 3 18 7 C9 11 2 11 2 7 Z" fill="var(--blue)" /></svg>';
+      else dot='<svg viewBox="0 0 20 14"><path d="M2 7 C2 3 9 3 18 7 C9 11 2 11 2 7 Z" fill="none" stroke="var(--rule)" stroke-width="1"/></svg>';
+      return '<button class="rstep '+(s.n===step?'on ':'')+(s.n<step||s.n<=maxStep?'done ':'')+(s.n>maxStep?'upcoming ':'')+(clickable?'clickable':'')+'" data-step="'+s.n+'"'+(clickable?'':' tabindex="-1"')+'>'+
+        '<span class="dot">'+dot+'</span>'+
+        '<span class="rt"><span class="tt">'+s.title+'</span><span class="ph">'+s.phase+'</span></span></button>';
+    }).join('');
+    document.querySelectorAll('.rstep.clickable').forEach(function(b){b.addEventListener('click',function(){go(parseInt(b.dataset.step,10));});});
+    // account state
+    document.getElementById('stepn').textContent='step '+step+' of 6';
+    var roleEl=document.getElementById('roleName'), noteEl=document.getElementById('acctNote');
+    if(registered){ roleEl.textContent=name||'registered'; noteEl.innerHTML='private daybook &middot; <span style="color:var(--muted)">not a member</span>'; }
+    else { roleEl.textContent='guest'; noteEl.textContent='no account · observing only'; }
+  }
+  function renderCites(){
+    var map={
+      1:'<b>guest access</b> · public materials and aggregate only · CIS PRD §07, §XV',
+      2:'<b>four kinds</b> · the patron line · Daybook PRD §1',
+      3:'<b>augmentation</b> · a person lands it · CIS PRD §02 principle 01',
+      4:'<b>register, not admit</b> · private-by-default · Daybook PRD §4 · §18.2',
+      5:'<b>legibility is the product</b> · learn by doing · CIS PRD §02 principle 02',
+      6:'<b>admission</b> · the longer arc · CIS PRD §08, §1.4, §12'
+    };
+    document.getElementById('cites').innerHTML=map[step]||'';
+  }
+
+  function render(){ draw(); renderAux(); renderRead(); renderRail(); renderCites(); }
+  render();
+})();
+</script>
+</body>
+</html>

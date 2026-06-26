@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="The Daybook — two petal layers. A settled bloom of public rhythm, and open matters that fill 0-100% as they ripen toward a decision a person must land. Techne Design System v4.">
+<meta name="robots" content="noindex,nofollow">
+<title>The Daybook &middot; settled &amp; ripening &middot; Techne</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --serif:"Libre Baskerville",Georgia,serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+    --dur:.4s;--micro:.16s;--ease:cubic-bezier(.4,0,.2,1);
+    --sun-gold:#EAB668;--sun-amber:#E09A52;--sun-coral:#D1755A;--sun-rose:#B45C7C;--sun-violet:#6E5494;--sun-blue:#5476B8;
+  }
+  html[data-mode="dark"]{
+    --bg:#0F0F12;--inset:#08080A;--surface:#16161B;--raised:#232329;
+    --line:#2A2A30;--rule:#3A3A42;
+    --heading:#E8E4DF;--text:#CFCBC4;--muted:#8A857E;--faint:#5A554F;
+    --blue:#6A8AC4;--blue-text:#97B5E8;--ember:#C4956A;--ember-text:#D4A57A;
+    --ok:#6A9A6A;--warn:#C46A6A;--petal:.5;
+  }
+  html[data-mode="light"]{
+    --bg:#F7F5F0;--inset:#EBE7DF;--surface:#FCFBF8;--raised:#FEFDFB;
+    --line:#D8D3C8;--rule:#9A958A;
+    --heading:#1A1A1F;--text:#2E2C28;--muted:#646058;--faint:#A39E92;
+    --blue:#4A6FB0;--blue-text:#39588F;--ember:#8A6A4A;--ember-text:#6F5436;
+    --ok:#4A7A4A;--warn:#A84F4C;--petal:.64;
+  }
+  *{box-sizing:border-box;}
+  html{color-scheme:dark light;}
+  html,body{height:100%;}
+  body{margin:0;background:var(--bg);color:var(--text);font:400 16px/1.7 var(--serif);
+    transition:background-color var(--dur) var(--ease),color var(--dur) var(--ease);overflow:hidden;}
+  em{font-style:italic;color:var(--heading);}
+  :focus-visible{outline:2px solid var(--blue);outline-offset:3px;}
+  ::selection{background:var(--blue);color:var(--bg);}
+
+  .app{height:100%;display:grid;grid-template-rows:auto 1fr auto;}
+  .head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:18px 32px 16px;border-bottom:1px solid var(--line);}
+  .head .nm{font:700 18px/1 var(--serif);color:var(--heading);letter-spacing:-.01em;}
+  .head .nm small{font:400 11px/1 var(--mono);color:var(--muted);text-transform:lowercase;letter-spacing:.04em;margin-left:12px;}
+  .head .win{font:400 10px/1.5 var(--mono);color:var(--faint);}
+  .modebtn{font:500 11px/1 var(--mono);color:var(--muted);background:none;border:0;cursor:pointer;padding:4px 2px;letter-spacing:.03em;}
+  .modebtn:hover{color:var(--heading);}
+
+  .main{display:grid;grid-template-columns:minmax(360px,1fr) 0.86fr;align-items:center;gap:46px;padding:0 46px;min-height:0;}
+  .dialwrap{min-width:0;display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .dial{width:100%;display:flex;justify-content:center;}
+  .dial svg{width:100%;max-width:500px;max-height:min(500px,60vh);height:auto;overflow:visible;}
+  .controls{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;width:100%;max-width:500px;}
+  .legend{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .lz{display:inline-flex;align-items:center;gap:7px;font:500 10px/1 var(--mono);color:var(--muted);background:none;border:1px solid transparent;border-radius:2px;padding:6px 9px;cursor:pointer;transition:color var(--micro) var(--ease),border-color var(--micro) var(--ease);}
+  .lz:hover{color:var(--heading);}
+  .lz.on{color:var(--heading);border-color:var(--rule);}
+  .lz svg{width:20px;height:12px;overflow:visible;}
+  .l2btn{display:inline-flex;align-items:center;gap:8px;font:500 10px/1 var(--mono);color:var(--muted);background:none;border:1px solid var(--rule);border-radius:2px;padding:6px 10px;cursor:pointer;transition:color var(--micro) var(--ease),border-color var(--micro) var(--ease);}
+  .l2btn:hover{color:var(--heading);}
+  .l2btn.on{color:var(--ember-text);border-color:var(--ember);}
+  .l2btn svg{width:16px;height:12px;overflow:visible;}
+  .legendnote{font:400 9.5px/1.4 var(--mono);color:var(--faint);text-align:center;width:100%;max-width:500px;letter-spacing:.02em;}
+
+  .ring{fill:none;stroke:var(--line);stroke-width:1;}
+  .arcseg{fill:none;stroke-width:2.5;stroke-linecap:round;opacity:.6;}
+  .horizon{stroke:var(--rule);stroke-width:1;stroke-dasharray:2 5;opacity:.5;}
+  .cardlbl{fill:var(--muted);font:400 9px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;}
+  .petal{transition:opacity var(--micro) var(--ease);cursor:pointer;}
+  .petal .lobe{opacity:var(--petal);}
+  .petal.dim{opacity:.1;}
+  .matter{transition:opacity var(--micro) var(--ease);cursor:pointer;}
+  .matter .edge{fill:none;stroke-width:1;opacity:.6;}
+  .matter .fillp{stroke:none;}
+  .matter.dim{opacity:.12;}
+  .matter.sel .edge{stroke-width:1.75;opacity:1;}
+
+  .nowline{stroke:var(--rule);stroke-width:1;stroke-dasharray:1 4;opacity:.5;}
+  .nowlbl{fill:var(--faint);font:400 8.5px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase;}
+  .sun{stroke-width:1.5;}
+  .c-time{fill:var(--heading);font:500 22px/1 var(--mono);font-variant-numeric:tabular-nums;letter-spacing:.02em;}
+  .c-mer{fill:var(--muted);font:400 9px/1 var(--mono);letter-spacing:.15em;text-transform:uppercase;}
+
+  .read{max-width:42ch;min-width:0;}
+  .tagline{font:600 9.5px/1 var(--mono);text-transform:uppercase;letter-spacing:.12em;margin:0 0 13px;display:inline-flex;align-items:center;gap:7px;color:var(--ember-text);}
+  .tagline .tk{width:14px;height:2px;background:var(--ember);}
+  .tagline.neutral{color:var(--muted);} .tagline.neutral .tk{background:var(--muted);}
+  .phase{font:700 27px/1.2 var(--serif);color:var(--heading);letter-spacing:-.01em;margin:0 0 6px;}
+  .sub{font:400 11px/1.6 var(--mono);color:var(--muted);margin:0 0 20px;letter-spacing:.02em;}
+  .intro{font:400 16px/1.7 var(--serif);color:var(--text);margin:0;}
+  .intro em{color:var(--heading);}
+  .types{margin-top:20px;display:flex;flex-direction:column;gap:11px;}
+  .tr{display:grid;grid-template-columns:auto 1fr;gap:11px;align-items:baseline;}
+  .tr .tn{font:500 11px/1.4 var(--mono);color:var(--heading);white-space:nowrap;}
+  .tr .tw{font:400 11px/1.5 var(--mono);color:var(--faint);}
+  .mfields{margin-top:16px;display:flex;flex-direction:column;gap:8px;}
+  .mf{display:grid;grid-template-columns:52px 1fr;gap:10px;font:400 11px/1.5 var(--mono);color:var(--muted);}
+  .mf .k{color:var(--faint);} .mf .cite{color:var(--ember-text);} .mf b{color:var(--text);font-weight:500;}
+  .ripebar{margin-top:14px;height:5px;border:1px solid var(--rule);border-radius:2px;overflow:hidden;}
+  .ripebar .fill{height:100%;background:var(--ember);opacity:.7;}
+  .actbtn{margin-top:16px;font:500 10px/1 var(--mono);color:var(--blue-text);background:none;border:1px solid var(--blue);border-radius:2px;height:27px;padding:0 13px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background-color var(--micro) var(--ease);}
+  .actbtn:hover{background:var(--raised);}
+  .actbtn.gate{color:var(--ember-text);border-color:var(--ember);}
+  .actbtn svg{width:12px;height:12px;stroke:currentColor;stroke-width:1.6;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+  .said{margin-top:14px;font:400 10px/1.5 var(--mono);color:var(--muted);display:inline-flex;align-items:center;gap:6px;}
+  .said .ico{color:var(--ok);display:flex;}
+  .notyet{margin-top:20px;padding-top:14px;border-top:1px solid var(--line);font:400 12px/1.65 var(--serif);color:var(--faint);font-style:italic;}
+
+  .comp{display:flex;align-items:center;gap:14px;padding:13px 46px;border-top:1px solid var(--line);flex-wrap:wrap;}
+  .ctypes{display:inline-flex;gap:5px;}
+  .ct{font:500 9.5px/1 var(--mono);color:var(--muted);background:none;border:1px solid var(--line);border-radius:2px;padding:5px 8px;cursor:pointer;transition:color var(--micro) var(--ease),border-color var(--micro) var(--ease);}
+  .ct:hover{color:var(--heading);}
+  .ct.on{color:var(--heading);border-color:var(--rule);}
+  .comp input{flex:1;min-width:140px;font:400 15px/1.5 var(--serif);color:var(--text);background:none;border:0;outline:none;}
+  .comp input::placeholder{color:var(--faint);}
+  .comp .now{font:400 10px/1 var(--mono);color:var(--faint);letter-spacing:.04em;}
+  .comp .setdown{font:500 11px/1 var(--mono);color:var(--blue-text);background:none;border:1px solid var(--blue);border-radius:2px;height:30px;padding:0 14px;cursor:pointer;letter-spacing:.03em;transition:background-color var(--micro) var(--ease);}
+  .comp .setdown:hover{background:var(--raised);}
+
+  @media (max-width:900px){
+    body{overflow:auto;}.app{height:auto;min-height:100%;}
+    .main{grid-template-columns:1fr;gap:24px;padding:24px 22px;}
+    .dial svg{max-height:none;max-width:400px;}
+    .read{max-width:none;}
+    .head,.comp{padding-left:22px;padding-right:22px;}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="head">
+    <div class="nm">The Daybook<small>settled &amp; ripening</small></div>
+    <div class="win">aggregate &middot; the last month</div>
+    <button class="modebtn" id="modeBtn">light</button>
+  </header>
+
+  <div class="main">
+    <div class="dialwrap">
+      <div class="dial"><svg id="dial" viewBox="0 0 480 480" role="img" aria-label="a settled bloom of public rhythm, with open matters filling toward a decision"></svg></div>
+      <div class="controls">
+        <div class="legend" id="legend"></div>
+        <button class="l2btn on" id="l2btn"><svg viewBox="0 0 18 12"><path d="M1 6 C1 2.5 8.5 2.5 17 6 C8.5 9.5 1 9.5 1 6 Z" fill="none" stroke="var(--ember)" stroke-width="1"/></svg><span id="l2lbl">open matters</span></button>
+      </div>
+      <div class="legendnote">solid petals are <span style="color:var(--text)">settled</span> &mdash; outlines are <span style="color:var(--ember-text)">ripening</span>, their fill 0&ndash;100% how close to a decision &middot; a person lands them</div>
+    </div>
+    <div class="read" id="read"></div>
+  </div>
+
+  <footer class="comp">
+    <span class="ctypes" id="ctypes"></span>
+    <input id="ce" type="text" placeholder="Make an entry public &mdash; a settled petal of this hour&rsquo;s colour opens." aria-label="make an entry public">
+    <span class="now" id="nowt"></span>
+    <button class="setdown" id="setdown">Set public</button>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement, mb=document.getElementById('modeBtn');
+  var m=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';
+  root.setAttribute('data-mode',m); mb.textContent=m==='dark'?'light':'dark';
+  mb.addEventListener('click',function(){var n=root.getAttribute('data-mode')==='dark'?'light':'dark';root.setAttribute('data-mode',n);mb.textContent=n==='dark'?'light':'dark';draw();});
+
+  var SVGNS='http://www.w3.org/2000/svg';
+  var cx=240, cy=240, R=148, H=50, LBL=R+54;
+  function thOf(t){ return (t-12)*Math.PI/12; }
+  function pt(r,t){ var th=thOf(t); return { x:cx+r*Math.sin(th), y:cy-r*Math.cos(th) }; }
+  function ptA(r,a){ return { x:cx+r*Math.sin(a), y:cy-r*Math.cos(a) }; }
+  var dxh=Math.sqrt(R*R-H*H), thR=Math.atan2(dxh/R,-H/R);
+  var sunset=12+thR/(Math.PI/12), sunrise=12-thR/(Math.PI/12);
+  function clock(t){var h=Math.floor(t),mn=Math.round((t-h)*60);if(mn===60){h++;mn=0;}return (h<10?'0':'')+h+':'+(mn<10?'0':'')+mn;}
+
+  var GOLD=[234,182,104],AMBER=[224,154,82],CORAL=[209,117,90],ROSE=[180,92,124],VIOLET=[110,84,148];
+  var ramp=[[0,VIOLET],[sunrise,ROSE],[7,CORAL],[10.5,AMBER],[12.5,GOLD],[15,AMBER],[18,CORAL],[sunset,ROSE],[21.5,VIOLET],[24,VIOLET]];
+  function colorAt(t){
+    t=((t%24)+24)%24; var a=ramp[0],b=ramp[ramp.length-1];
+    for(var i=0;i<ramp.length-1;i++){ if(t>=ramp[i][0]&&t<=ramp[i+1][0]){a=ramp[i];b=ramp[i+1];break;} }
+    var f=(b[0]===a[0])?0:(t-a[0])/(b[0]-a[0]);
+    var c=[0,1,2].map(function(k){return Math.round(a[1][k]+(b[1][k]-a[1][k])*f);});
+    return 'rgb('+c[0]+','+c[1]+','+c[2]+')';
+  }
+
+  // layer 1 — the settled bloom (aggregate of what's been made public)
+  var types=[
+    { key:'reflection', label:'Reflection', off:-0.04, window:'first light & evening', desc:'narrative, not posted to the ledger',
+      data:[{h:5.5,w:2},{h:6.5,w:1},{h:20,w:2},{h:21.5,w:3},{h:22.5,w:2},{h:23,w:1}] },
+    { key:'contribution', label:'Contribution', off:-0.014, window:'working hours', desc:'labor logged for the program budget',
+      data:[{h:9,w:1},{h:10,w:2},{h:11,w:2},{h:13,w:2},{h:14,w:3},{h:15,w:2},{h:16,w:1}] },
+    { key:'exchange', label:'Exchange', off:0.014, window:'mid-morning', desc:'transfers and allocations of value',
+      data:[{h:9,w:2},{h:9.75,w:1},{h:10.5,w:2},{h:11,w:1},{h:11.5,w:1}] },
+    { key:'clearing', label:'Clearing', off:0.04, window:'night', desc:'settlements between vaults at day&rsquo;s end',
+      data:[{h:21,w:1},{h:22,w:3},{h:22.5,w:2},{h:23,w:1}] }
+  ];
+  function byKey(k){ return types.filter(function(t){return t.key===k;})[0]; }
+  function kLabel(k){ return byKey(k)?byKey(k).label:k; }
+  function kOff(k){ return byKey(k)?byKey(k).off:0; }
+
+  // layer 2 — open matters, filling 0..1 toward a decision a person must land
+  var matters=[
+    { id:'m1', kind:'clearing', h:22.2, ripe:0.20, awaits:'resolution between the peers', face:'a clearing line in question', cite:'clearing protocol', act:null },
+    { id:'m2', kind:'contribution', h:14.0, ripe:0.50, awaits:'your confirmation of the reading', face:'contribution 3.5h \u2192 Cairn', cite:'Bylaws \u00a74', act:'confirm' },
+    { id:'m3', kind:'exchange', h:11.5, ripe:0.78, awaits:'the circle\u2019s assent', face:'allocation $1,500 \u2192 LearnVibe.Build', cite:'Bylaws \u00a76', act:'signal' },
+    { id:'m4', kind:'contribution', h:15.5, ripe:1.0, awaits:'your post', face:'a contribution, read &amp; confirmed', cite:'Bylaws \u00a74', act:'post' }
+  ];
+
+  var active=null, showL2=true, sel=null;   // sel = matter id
+  var nowD=new Date(), tn=nowD.getHours()+nowD.getMinutes()/60, compType='reflection';
+  var svg=document.getElementById('dial');
+  function el(tag,a){var n=document.createElementNS(SVGNS,tag);for(var k in a)n.setAttribute(k,a[k]);return n;}
+
+  function petalPath(a,L,W){
+    var ax=Math.sin(a),ay=-Math.cos(a),px=Math.cos(a),py=Math.sin(a);
+    var B=ptA(R,a);
+    function P(al,pe){ return {x:B.x+ax*al+px*pe, y:B.y+ay*al+py*pe}; }
+    var T=P(L,0), cA1=P(L*0.30,W), cA2=P(L*0.86,W*0.42), cB1=P(L*0.86,-W*0.42), cB2=P(L*0.30,-W);
+    return 'M '+B.x.toFixed(1)+' '+B.y.toFixed(1)+
+      ' C '+cA1.x.toFixed(1)+' '+cA1.y.toFixed(1)+' '+cA2.x.toFixed(1)+' '+cA2.y.toFixed(1)+' '+T.x.toFixed(1)+' '+T.y.toFixed(1)+
+      ' C '+cB1.x.toFixed(1)+' '+cB1.y.toFixed(1)+' '+cB2.x.toFixed(1)+' '+cB2.y.toFixed(1)+' '+B.x.toFixed(1)+' '+B.y.toFixed(1)+' Z';
+  }
+  function drawPetal(type,d){
+    var a=thOf(d.h)+type.off, L=15+d.w*8, W=4.5+d.w*2.2, col=colorAt(d.h);
+    var dim=(active&&active!==type.key);
+    var g=el('g',{class:'petal'+(dim?' dim':''),tabindex:'0','data-k':type.key});
+    var p=el('path',{class:'lobe',d:petalPath(a,L,W)}); p.style.fill=col; g.appendChild(p);
+    svg.appendChild(g);
+  }
+  function drawMatter(mm){
+    var a=thOf(mm.h)+kOff(mm.kind), ew=1+mm.ripe*2.0, L=15+ew*8, W=4.5+ew*2.2, col=colorAt(mm.h);
+    var dim=(active&&active!==mm.kind);
+    var g=el('g',{class:'matter'+(dim?' dim':'')+(sel===mm.id?' sel':''),tabindex:'0','data-m':mm.id});
+    var dpath=petalPath(a,L,W);
+    var fp=el('path',{class:'fillp',d:dpath}); fp.style.fill=col; fp.style.opacity=(mm.ripe*0.55).toFixed(3); g.appendChild(fp);
+    var ed=el('path',{class:'edge',d:dpath}); ed.style.stroke=col; g.appendChild(ed);
+    svg.appendChild(g);
+  }
+
+  function draw(){
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    svg.appendChild(el('circle',{class:'ring',cx:cx,cy:cy,r:R}));
+    var stops=['var(--sun-rose)','var(--sun-coral)','var(--sun-amber)','var(--sun-amber)','var(--sun-coral)','var(--sun-rose)'];
+    for(var i=0;i<6;i++){ var s=-thR+(2*thR)*i/6,e2=-thR+(2*thR)*(i+1)/6,p0=ptA(R,s),p1=ptA(R,e2);
+      var pa=el('path',{class:'arcseg',d:'M '+p0.x.toFixed(1)+' '+p0.y.toFixed(1)+' A '+R+' '+R+' 0 0 1 '+p1.x.toFixed(1)+' '+p1.y.toFixed(1)}); pa.style.stroke=stops[i]; svg.appendChild(pa); }
+    svg.appendChild(el('line',{class:'horizon',x1:cx-dxh,y1:cy+H,x2:cx+dxh,y2:cy+H}));
+    function card(t,label,dy){ var lp=ptA(LBL,thOf(t)); var tx=el('text',{class:'cardlbl',x:lp.x.toFixed(1),y:(lp.y+(dy||0)).toFixed(1),'text-anchor':'middle'}); tx.textContent=label; svg.appendChild(tx); }
+    card(12,'noon',-2); card(sunrise,'sunrise',3); card(sunset,'sunset',3); card(0,'midnight',9);
+    // layer 1
+    types.forEach(function(ty){ ty.data.forEach(function(d){ drawPetal(ty,d); }); });
+    // layer 2 (on top)
+    if(showL2) matters.forEach(function(mm){ drawMatter(mm); });
+    // now
+    var day=(tn>=sunrise&&tn<=sunset), io=pt(R-26,tn), oo=pt(R,tn);
+    svg.appendChild(el('line',{class:'nowline',x1:io.x.toFixed(1),y1:io.y.toFixed(1),x2:oo.x.toFixed(1),y2:oo.y.toFixed(1)}));
+    var sp=pt(R,tn);
+    if(day){var hh=el('circle',{class:'sun',cx:sp.x.toFixed(1),cy:sp.y.toFixed(1),r:7});hh.style.fill='none';hh.style.stroke='var(--sun-gold)';hh.style.opacity='.45';svg.appendChild(hh);}
+    var sc=el('circle',{class:'sun',cx:sp.x.toFixed(1),cy:sp.y.toFixed(1),r:4.5});sc.style.fill=day?'var(--sun-gold)':'var(--surface)';sc.style.stroke=day?'var(--sun-gold)':'var(--muted)';svg.appendChild(sc);
+    var nlp=ptA(LBL,thOf(tn)); var nl=el('text',{class:'nowlbl',x:nlp.x.toFixed(1),y:(nlp.y+3).toFixed(1),'text-anchor':'middle'});nl.textContent='now';svg.appendChild(nl);
+    var ct=el('text',{class:'c-time',x:cx,y:cy+1,'text-anchor':'middle'});ct.textContent=active?byKey(active).label:'the day';svg.appendChild(ct);
+    var cm=el('text',{class:'c-mer',x:cx,y:cy+20,'text-anchor':'middle'});cm.textContent=active?'one kind':(showL2?matters.length+' open':clock(tn));svg.appendChild(cm);
+  }
+
+  function renderLegend(){
+    document.getElementById('legend').innerHTML = types.map(function(t){
+      return '<button class="lz'+(active===t.key?' on':'')+'" data-k="'+t.key+'">'+
+        '<svg viewBox="0 0 20 12"><path d="M2 6 C2 2.5 9 2.5 18 6 C9 9.5 2 9.5 2 6 Z" fill="var(--muted)" opacity=".55"/></svg>'+t.label+'</button>';
+    }).join('');
+    document.querySelectorAll('.lz').forEach(function(b){ b.addEventListener('click',function(){ active=(active===b.dataset.k)?null:b.dataset.k; render(); }); });
+    document.getElementById('l2lbl').textContent = 'open matters'+(showL2?' \u00b7 '+matters.length:'');
+    document.getElementById('l2btn').classList.toggle('on',showL2);
+  }
+
+  function land(mm){            // a person's act: the petal goes solid into the settled bloom
+    var t=byKey(mm.kind)||byKey('contribution');
+    var near=t.data.filter(function(d){return Math.abs(d.h-mm.h)<0.4;})[0];
+    if(near) near.w+=1; else t.data.push({h:mm.h,w:2});
+    matters=matters.filter(function(x){return x.id!==mm.id;});
+    sel=null;
+  }
+
+  function renderRead(){
+    var h;
+    if(sel){
+      var mm=matters.filter(function(x){return x.id===sel;})[0];
+      var pct=Math.round(mm.ripe*100), ripeWord=mm.ripe>=1?'ripe \u2014 at the threshold':'still ripening';
+      var actHTML='';
+      if(mm.act==='confirm') actHTML='<button class="actbtn" data-act="confirm" data-m="'+mm.id+'"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>This reads me right</button>';
+      else if(mm.act==='post') actHTML='<button class="actbtn" data-act="post" data-m="'+mm.id+'"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Post \u00b7 land it into the bloom</button>';
+      else if(mm.act==='signal') actHTML='<button class="actbtn gate" data-act="signal" data-m="'+mm.id+'"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 2"/></svg>Bring it to the circle</button>';
+      else if(mm.signalled) actHTML='<div class="said"><span class="ico"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;stroke-width:1.6;fill:none"><path d="M20 6 9 17l-5-5"/></svg></span>circle signalled &middot; awaits assent</div>';
+      h='<div class="tagline"><span class="tk"></span>open matter</div>'+
+        '<h1 class="phase">'+kLabel(mm.kind)+'</h1>'+
+        '<p class="sub">'+clock(mm.h)+' &middot; '+pct+'% &middot; '+ripeWord+'</p>'+
+        '<p class="intro">'+mm.face+' &mdash; awaits <em>'+mm.awaits+'</em>.</p>'+
+        '<div class="ripebar"><div class="fill" style="width:'+pct+'%"></div></div>'+
+        '<div class="mfields"><div class="mf"><span class="k">cited</span><span class="cite">'+mm.cite+'</span></div></div>'+
+        actHTML+
+        '<div class="notyet">The fill is how close this is to settled, never what it says. A full petal signals; it takes a person to land it &mdash; the bloom does not fill itself.</div>';
+    } else if(active){
+      var t=byKey(active), total=t.data.reduce(function(s,d){return s+d.w;},0);
+      h='<div class="tagline'+(active==='reflection'?' neutral':'')+'"><span class="tk"></span>one kind</div>'+
+        '<h1 class="phase">'+t.label+'</h1>'+
+        '<p class="sub">'+t.window+'</p>'+
+        '<p class="intro">'+t.label+' settles in the <em>'+t.window+'</em> &mdash; '+t.desc+'. Each petal wears its hour&rsquo;s colour; any outline is one still ripening.</p>'+
+        '<div class="freq" style="margin-top:18px;font:400 12px/1.6 var(--mono);color:var(--muted)"><b style="color:var(--heading)">&asymp; '+total+'</b> made public this way over the last month</div>'+
+        '<div class="notyet">Click an outline to read what it awaits. The petals say when and how often, never what.</div>';
+    } else {
+      h='<div class="tagline neutral"><span class="tk"></span>settled &amp; ripening</div>'+
+        '<h1 class="phase">Two blooms in one</h1>'+
+        '<p class="intro">The solid petals are <em>settled</em> &mdash; what the co-op has made public and posted, by the hour it tends to happen. The outlines are <em>open matters</em>, each filling 0&ndash;100% as it ripens toward a decision. Colour is still the hour; fill is how close to done.</p>'+
+        '<div class="types">'+types.map(function(t){return '<div class="tr"><span class="tn">'+t.label+'</span><span class="tw">'+t.window+'</span></div>';}).join('')+'</div>'+
+        '<div class="notyet">A petal can fill all the way &mdash; that is the signal &mdash; but it only goes solid when a person lands it. Click an outline to act on it.</div>';
+    }
+    document.getElementById('read').innerHTML=h;
+    var ab=document.querySelector('.actbtn[data-act]');
+    if(ab) ab.addEventListener('click',function(){
+      var mm=matters.filter(function(x){return x.id===ab.dataset.m;})[0]; if(!mm) return;
+      var a=ab.dataset.act;
+      if(a==='confirm'){ mm.ripe=1.0; mm.awaits='your post'; mm.act='post'; }
+      else if(a==='post'){ land(mm); }
+      else if(a==='signal'){ mm.signalled=true; mm.act=null; mm.awaits='the circle\u2019s assent (signalled)'; }
+      render();
+    });
+  }
+
+  function render(){ draw(); renderLegend(); renderRead(); }
+
+  svg.addEventListener('click',function(ev){
+    var mg=ev.target.closest('[data-m]'); if(mg){ sel=(sel===mg.getAttribute('data-m'))?null:mg.getAttribute('data-m'); render(); return; }
+    var g=ev.target.closest('[data-k]'); if(g){ active=(active===g.getAttribute('data-k'))?null:g.getAttribute('data-k'); sel=null; render(); }
+  });
+  svg.addEventListener('keydown',function(ev){ var n=ev.target.closest('[data-m]')||ev.target.closest('[data-k]'); if(n&&(ev.key==='Enter'||ev.key===' ')){ev.preventDefault();n.dispatchEvent(new MouseEvent('click',{bubbles:true}));} });
+
+  document.getElementById('l2btn').addEventListener('click',function(){ showL2=!showL2; if(!showL2)sel=null; render(); });
+
+  function renderCtypes(){
+    document.getElementById('ctypes').innerHTML = types.map(function(t){
+      return '<button class="ct'+(compType===t.key?' on':'')+'" data-k="'+t.key+'">'+t.label.toLowerCase()+'</button>';
+    }).join('');
+    document.querySelectorAll('.ct').forEach(function(b){ b.addEventListener('click',function(){ compType=b.dataset.k; renderCtypes(); }); });
+  }
+  document.getElementById('nowt').textContent=clock(tn);
+  document.getElementById('setdown').addEventListener('click',function(){
+    var t=byKey(compType), near=t.data.filter(function(d){return Math.abs(d.h-tn)<0.4;})[0];
+    if(near) near.w+=1; else t.data.push({h:tn,w:1});
+    document.getElementById('ce').value=''; active=compType; sel=null; render();
+  });
+
+  renderCtypes(); render();
+})();
+</script>
+</body>
+</html>
