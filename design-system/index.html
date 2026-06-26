@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<meta name="description" content="Techne Design System v4. A parchment ground, a blue primary and ember secondary accent, earth state colors, and a sunset data-visualization range, with the document grammar and key instruments in one standalone reference.">
+<meta name="robots" content="index,follow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<title>Design System v4 &middot; Techne Co-op</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --serif:"Libre Baskerville",Georgia,serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+    --dur:.4s; --micro:.16s; --ease:cubic-bezier(.4,0,.2,1);
+    /* sunset range, a twilight-to-sunset sky sweep; woven through written structure and used for data */
+    --sun-gold:#EAB668; --sun-amber:#E09A52; --sun-coral:#D1755A; --sun-rose:#B45C7C; --sun-violet:#6E5494; --sun-blue:#5476B8;
+  }
+  html[data-mode="dark"] {
+    --bg:#0F0F12; --inset:#08080A; --surface:#16161B; --raised:#232329;
+    --line:#2A2A30; --rule:#3A3A42;
+    --heading:#E8E4DF; --text:#CFCBC4; --muted:#8A857E; --faint:#5A554F;
+    --blue:#6A8AC4; --blue-text:#97B5E8;     /* primary accent */
+    --ember:#C4956A; --ember-text:#D4A57A;   /* secondary accent */
+    --ok:#6A9A6A; --info:#6A8AC4; --warn:#C46A6A;
+    --heat-1:#6E5494; --heat-2:#B45C7C; --heat-3:#D1755A; --heat-4:#E09A52; --heat-5:#EAB668;
+    --sun-gold-t:#EAB668; --sun-amber-t:#E5A562; --sun-coral-t:#DE8872; --sun-rose-t:#CF7C9A; --sun-violet-t:#9E86C4; --sun-blue-t:#8FAEE0;
+  }
+  html[data-mode="light"] {
+    --bg:#F7F5F0; --inset:#EBE7DF; --surface:#FCFBF8; --raised:#FEFDFB;
+    --line:#D8D3C8; --rule:#9A958A;
+    --heading:#1A1A1F; --text:#2E2C28; --muted:#646058; --faint:#A39E92;
+    --blue:#4A6FB0; --blue-text:#39588F;
+    --ember:#8A6A4A; --ember-text:#6F5436;
+    --ok:#4A7A4A; --info:#4A6FB0; --warn:#A84F4C;
+    --heat-1:#EAB668; --heat-2:#E09A52; --heat-3:#D1755A; --heat-4:#B45C7C; --heat-5:#6E5494;
+    --sun-gold-t:#87621F; --sun-amber-t:#8C581D; --sun-coral-t:#9C4636; --sun-rose-t:#8C3D58; --sun-violet-t:#4C3870; --sun-blue-t:#3A5694;
+  }
+  * { box-sizing:border-box; }
+  html { color-scheme:dark light; }
+  body { margin:0; background:var(--bg); color:var(--text);
+    font:400 16px/1.75 var(--serif);
+    transition:background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+  .wrap { max-width:920px; margin:0 auto; padding:0 var(--s5); }
+  .mono { font-family:var(--mono); }
+  .num { font-variant-numeric:tabular-nums; }
+  em { font-style:italic; color:var(--heading); }
+  code { font:400 .85em/1 var(--mono); color:var(--ember-text); background:var(--inset); padding:2px 5px; border-radius:2px; }
+  a { color:var(--blue-text); text-decoration:underline; text-underline-offset:3px; text-decoration-thickness:1px; transition:text-decoration-thickness var(--micro) var(--ease); }
+  a:hover { text-decoration-thickness:2px; }
+  :focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
+
+  /* masthead */
+  .mast { border-bottom:1px solid var(--rule); padding:var(--s8) 0 var(--s6); margin-bottom:var(--s7); }
+  .mast .kick { font:500 11px/1.6 var(--mono); color:var(--ember-text); text-transform:uppercase; letter-spacing:.12em; }
+  .mast h1 { font:700 38px/1.1 var(--serif); color:var(--heading); margin:var(--s3) 0 var(--s3); letter-spacing:-.01em; }
+  .mast p { font:400 17px/1.6 var(--serif); color:var(--text); margin:0; max-width:64ch; }
+  .mast .meta { display:flex; flex-wrap:wrap; gap:var(--s2) var(--s5); margin-top:var(--s5); font:400 11px/1.6 var(--mono); color:var(--muted); }
+  .mast .meta b { color:var(--blue-text); font-weight:600; }
+  .mast .meta .em { color:var(--ember-text); }
+  .mast .band { display:flex; gap:0; height:6px; margin:var(--s5) 0 0; border:1px solid var(--line); }
+  .mast .band span { flex:1; }
+  .mast .band-cap { font:400 9.5px/1.5 var(--mono); color:var(--faint); margin-top:6px; display:flex; justify-content:space-between; }
+
+  /* sections with citable addresses */
+  .sec { padding:var(--s7) 0 0; }
+  .sec .addr { font:600 12px/1 var(--mono); color:var(--shue-t); margin-bottom:var(--s2); }
+  .sec h2 { font:700 25px/1.2 var(--serif); color:var(--heading); margin:0 0 var(--s4); letter-spacing:-.01em; padding-left:14px; border-left:3px solid var(--shue); }
+  .sec h3 { font:600 13px/1.5 var(--mono); color:var(--heading); text-transform:lowercase; letter-spacing:.02em; margin:var(--s6) 0 var(--s3); padding-bottom:6px; border-bottom:1px solid var(--shue); }
+  /* the sweep: each section a point on the twilight-to-sunset sky, warm at the top, cool at the foot */
+  #s0,#s1   { --shue:var(--sun-gold);   --shue-t:var(--sun-gold-t); }
+  #s2,#s3   { --shue:var(--sun-amber);  --shue-t:var(--sun-amber-t); }
+  #s4,#s5   { --shue:var(--sun-coral);  --shue-t:var(--sun-coral-t); }
+  #s6,#s7   { --shue:var(--sun-rose);   --shue-t:var(--sun-rose-t); }
+  #s8,#s9   { --shue:var(--sun-violet); --shue-t:var(--sun-violet-t); }
+  #s10,#s11 { --shue:var(--sun-blue);   --shue-t:var(--sun-blue-t); }
+  .sec p { margin:0 0 var(--s4); max-width:68ch; }
+  .lead { font-size:17px; }
+
+  /* swatches */
+  .swatches { margin:var(--s4) 0; }
+  .swrow { display:grid; grid-template-columns:26px 150px 1fr; gap:var(--s3); align-items:center; padding:7px 0; border-bottom:1px solid var(--line); }
+  .swrow:last-child { border-bottom:0; }
+  .swrow .sw { width:26px; height:26px; border:1px solid var(--line); border-radius:2px; }
+  .swrow .tk { font:500 12px/1.4 var(--mono); color:var(--heading); }
+  .swrow .rl { font:400 11px/1.5 var(--mono); color:var(--muted); }
+
+  /* rule vocabulary samples */
+  .rules-demo { margin:var(--s4) 0; border:1px solid var(--line); }
+  .rd { display:grid; grid-template-columns:170px 1fr; gap:var(--s4); align-items:center; padding:var(--s3) var(--s4); border-bottom:1px solid var(--line); }
+  .rd:last-child { border-bottom:0; }
+  .rd .samp { height:34px; display:flex; align-items:center; }
+  .rd .hair { width:100%; height:1px; background:var(--line); }
+  .rd .scope { width:100%; height:1px; background:var(--rule); }
+  .rd .settled { width:100%; border-top:1px solid var(--heading); border-bottom:1px solid var(--heading); height:4px; }
+  .rd .stub { width:34px; height:2px; background:var(--ember); }
+  .rd .desc { font:400 11.5px/1.6 var(--mono); color:var(--muted); }
+  .rd .desc b { color:var(--heading); font-weight:600; }
+
+  /* register rows */
+  .reg { margin:var(--s4) 0; border-top:1px solid var(--rule); }
+  .reg-row { display:grid; grid-template-columns:34px 1fr; gap:var(--s3); padding:var(--s3) 0; border-bottom:1px solid var(--line); }
+  .reg-row .no { font:500 11px/1.6 var(--mono); color:var(--shue-t); }
+  .reg-row .t { font:600 14px/1.4 var(--serif); color:var(--heading); }
+  .reg-row .d { font:400 13px/1.6 var(--serif); color:var(--text); margin-top:2px; }
+
+  /* memorandum */
+  .memo { margin:var(--s5) 0; padding:var(--s4) 0; border-top:1px solid var(--rule); border-bottom:4px double var(--heading); }
+  .memo .k { font:500 10px/1.6 var(--mono); color:var(--ember-text); text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px; }
+  .memo p { margin:0; font-size:15px; }
+
+  /* chips */
+  .chip { display:inline-flex; align-items:center; gap:6px; font:500 10.5px/1 var(--mono); padding:4px 9px; border:1px solid var(--line); border-radius:2px; background:var(--surface); }
+  .chip .dot { width:6px; height:6px; }
+  .chip.ok { color:var(--ok); } .chip.ok .dot { background:var(--ok); }
+  .chip.info { color:var(--info); } .chip.info .dot { background:var(--info); }
+  .chip.warn { color:var(--warn); } .chip.warn .dot { background:var(--warn); }
+  .chiprow { display:flex; gap:var(--s2); flex-wrap:wrap; align-items:center; margin:var(--s3) 0; }
+
+  /* buttons */
+  .btn { font:500 12px/1 var(--mono); color:var(--heading); background:var(--surface); border:1px solid var(--rule); border-radius:2px; padding:0 14px; height:32px; cursor:pointer; display:inline-flex; align-items:center; gap:7px; transition:background-color var(--micro) var(--ease), border-color var(--micro) var(--ease); }
+  .btn:hover { background:var(--raised); border-color:var(--heading); }
+  .btn.primary { border-color:var(--blue); color:var(--blue-text); }
+  .btn.secondary { border-color:var(--ember); color:var(--ember-text); }
+  .btn:hover.primary, .btn:hover.secondary { background:var(--raised); }
+
+  /* provenance */
+  .prov { display:inline-flex; align-items:center; gap:6px; font:400 10.5px/1.5 var(--mono); color:var(--muted); padding:4px 9px; border:1px solid var(--line); border-left:2px solid var(--ember); border-radius:2px; background:var(--surface); }
+  .prov b { color:var(--heading); font-weight:600; }
+
+  /* panels, tiles, table, gauges (instrument elements) */
+  .stage { background:var(--inset); border:1px solid var(--line); padding:var(--s4); margin:var(--s4) 0; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--s3); }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:var(--s3); }
+  .panel { background:var(--surface); border:1px solid var(--line); }
+  .panel > .ph { display:flex; align-items:center; justify-content:space-between; gap:var(--s2); padding:8px var(--s3); border-bottom:1px solid var(--line); }
+  .panel > .ph .pt { font:600 11px/1.4 var(--mono); color:var(--heading); text-transform:lowercase; }
+  .panel > .pb { padding:var(--s3); }
+  .tile { background:var(--surface); border:1px solid var(--line); padding:var(--s3); }
+  .tile .tl { font:500 10px/1.5 var(--mono); color:var(--muted); display:flex; justify-content:space-between; }
+  .tile .tf { font:500 24px/1.2 var(--mono); color:var(--heading); margin-top:5px; font-variant-numeric:tabular-nums; }
+  .tile .ts { font:400 10px/1.5 var(--mono); color:var(--faint); margin-top:2px; }
+  .gauge { height:6px; background:var(--inset); border:1px solid var(--line); position:relative; margin-top:8px; }
+  .gauge .g { position:absolute; left:0; top:0; bottom:0; background:var(--muted); }
+  .gauge .tick { position:absolute; top:-2px; bottom:-2px; width:1px; background:var(--heading); }
+  table.dt { border-collapse:collapse; width:100%; }
+  table.dt thead th { font:600 9.5px/1.6 var(--mono); color:var(--muted); text-transform:lowercase; text-align:left; padding:7px 10px; border-bottom:1px solid var(--rule); background:var(--raised); }
+  table.dt thead th.r { text-align:right; }
+  table.dt tbody td { font:400 11.5px/1.5 var(--mono); color:var(--text); padding:6px 10px; border-bottom:1px solid var(--line); }
+  table.dt tbody td.r { text-align:right; font-variant-numeric:tabular-nums; }
+  table.dt tbody td.s { font:400 12px/1.5 var(--serif); color:var(--heading); }
+  table.dt tbody tr.total td { border-top:1px solid var(--rule); border-bottom:4px double var(--heading); color:var(--heading); }
+
+  /* heat grid */
+  .heat { display:grid; grid-template-columns:repeat(10,1fr); gap:3px; }
+  .heat .cell { aspect-ratio:1; border:1px solid var(--line); border-radius:1px; }
+  .h1{background:var(--heat-1)} .h2{background:var(--heat-2)} .h3{background:var(--heat-3)} .h4{background:var(--heat-4)} .h5{background:var(--heat-5)} .h0{background:var(--inset)}
+  .ramp-legend { display:flex; gap:6px; margin:var(--s3) 0; }
+  .ramp-legend .s { flex:1; }
+  .ramp-legend .s .c { height:22px; border:1px solid var(--line); border-radius:2px; }
+  .ramp-legend .s .n { font:400 9px/1.5 var(--mono); color:var(--muted); margin-top:4px; text-align:center; }
+
+  /* stacked bars + legend */
+  .bars { display:flex; align-items:flex-end; gap:8px; height:110px; }
+  .bars .bar { flex:1; display:flex; flex-direction:column-reverse; }
+  .bars .seg { border:1px solid var(--line); border-bottom:0; }
+  .seg-g{background:var(--sun-gold)} .seg-c{background:var(--sun-coral)} .seg-v{background:var(--sun-violet)}
+  .vlegend { display:flex; gap:var(--s3); margin-top:10px; }
+  .vlegend .lk { display:flex; align-items:center; gap:5px; font:400 9px/1 var(--mono); color:var(--muted); }
+  .vlegend .lk .sw { width:9px; height:9px; border:1px solid var(--line); }
+  .cap { font:400 10.5px/1.6 var(--mono); color:var(--faint); margin-top:8px; }
+
+  /* board */
+  .board { display:grid; grid-template-columns:1fr 1fr 1fr; gap:var(--s3); }
+
+  /* agent block */
+  pre.agent { background:var(--inset); border:1px solid var(--line); border-left:2px solid var(--ember); padding:var(--s4); overflow-x:auto; font:400 11.5px/1.7 var(--mono); color:var(--text); margin:var(--s4) 0; }
+  ol.audit { margin:var(--s4) 0; padding-left:0; list-style:none; counter-reset:a; }
+  ol.audit li { counter-increment:a; font:400 12.5px/1.6 var(--serif); color:var(--text); padding:6px 0 6px 32px; border-bottom:1px solid var(--line); position:relative; }
+  ol.audit li::before { content:counter(a); position:absolute; left:0; top:7px; font:500 10px/1.6 var(--mono); color:var(--ember-text); }
+
+  /* mode toggle */
+  .toggle { position:fixed; top:16px; right:16px; z-index:100; font:500 11px/1 var(--mono); color:var(--text); background:var(--surface); border:1px solid var(--rule); border-radius:2px; padding:7px 12px; cursor:pointer; }
+  .toggle:hover { background:var(--raised); border-color:var(--heading); }
+
+  footer { border-top:1px solid var(--rule); margin-top:var(--s8); padding:var(--s5) 0 var(--s8); font:400 11px/1.7 var(--mono); color:var(--muted); }
+  footer .row { display:flex; flex-wrap:wrap; gap:6px var(--s5); }
+
+  @media (max-width:760px){ .grid3,.board { grid-template-columns:1fr 1fr; } .mast h1 { font-size:30px; } }
+  @media (prefers-reduced-motion: reduce){ * { transition:none !important; } }
+</style>
+</head>
+<body>
+<button id="modeBtn" class="toggle" aria-label="Switch color mode">light</button>
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="kick"><a href="../" style="color:inherit;text-decoration:none">Techne Co-op</a> &middot; Design System v4</div>
+    <h1>Parchment, blue, ember, sunset</h1>
+    <p>A standalone reference for the visual artifacts of a cooperative: the documents it writes to govern itself, and the instruments it builds to watch itself. The palette is borrowed from techne.institute and extended, with blue raised to the primary accent, ember held as the warm secondary, and a sunset range added for data.</p>
+    <div class="meta">
+      <span>ground &middot; warm neutral, two modes</span>
+      <span>primary &middot; <b>blue</b></span>
+      <span class="em">secondary &middot; ember</span>
+      <span>sunset &middot; woven sweep, blue to gold</span>
+      <span>RegenHub, LCA &middot; Boulder</span>
+    </div>
+    <div class="band" aria-hidden="true">
+      <span style="background:var(--sun-gold)"></span><span style="background:var(--sun-amber)"></span><span style="background:var(--sun-coral)"></span><span style="background:var(--sun-rose)"></span><span style="background:var(--sun-violet)"></span><span style="background:var(--sun-blue)"></span>
+    </div>
+    <div class="band-cap"><span>the sunset sweep, woven through the sections below</span><span>gold at the top, twilight blue at the foot</span></div>
+  </header>
+
+  <section class="sec" id="s0">
+    <div class="addr">&sect;0</div>
+    <h2>What this document is</h2>
+    <p class="lead">A reference specification holding the tokens, type, rules, components, layout, and voice that make a cooperative's artifacts recognizably its own, together with the key instruments those artifacts compose into and the instructions an agent needs to produce them. It unites in one place the document grammar, in which governance texts are written, and the instrument grammar, in which operational surfaces are built.</p>
+    <p>The palette has a lineage worth stating, because identity here rests on referents rather than reactions. The neutral ground, the warm accent, and the earth state colors are borrowed from the published tokens of techne.institute, the learning institute that shares this cooperative's building. From that palette, blue, which there is an informational color, is extended into the primary accent, and a sunset range is added for the one job the borrowed palette could not do: encoding magnitude and category in data. Sections carry the section sign because governance documents cite one another, and an address here can be cited from anywhere in the commons.</p>
+  </section>
+
+  <section class="sec" id="s1">
+    <div class="addr">&sect;1</div>
+    <h2>Principles</h2>
+    <p class="lead">Six commitments hold the rest in place. Each is a constraint, and the constraints are what keep an agent-built surface recognizable rather than generic.</p>
+    <p><em>A warm-neutral ground carries the hierarchy.</em> Parchment and ink, not a tinted field. Weight, value, and rule do the work of organizing a page before any color is spent, so the ground stays quiet and the eye finds structure without being told where to look in color.</p>
+    <p><em>Two accents, complementary, each with a domain.</em> <em>Blue</em> is the primary, the reader's color: links, the primary action, focus, the current selection. <em>Ember</em> is the secondary, the cooperative's color: the citation mark, the stub rule, the section address, the secondary action. Cool for moving, warm for authority. The division lets both be used without either becoming a wash.</p>
+    <p><em>A sunset range, woven through the writing and the data.</em> A twilight-to-sunset sweep, blue through gold, that runs down the document as an atmosphere, tinting each section's address, spine, and subhead rules so the page passes through a sky as it is read, and that also does the work of telling magnitude and category apart in charts. It still never colors a control, never enters an action, and never carries the sign of a number: what it colors is the structure a reader moves through and the data a reader weighs, not the buttons a reader presses.</p>
+    <p><em>State is earth-muted, and never color alone.</em> Operational, in review, and pending are shown in green, blue, and red, only on instruments, always paired with a word and a square mark, so no condition depends on a reader telling two hues apart.</p>
+    <p><em>Flat, and still.</em> Surfaces meet at rules; depth is an edge and a value, not a shadow. The radius is 2px on controls and zero on surfaces. Motion happens only in answer to the reader, never on its own.</p>
+    <p><em>Every choice names its reason.</em> A form that cannot say why it is the way it is, here or in the section that introduces it, is a default, and a default is someone else's decision. When a stranger can name these choices as defaults, the document is due for revision.</p>
+  </section>
+
+  <section class="sec" id="s2">
+    <div class="addr">&sect;2</div>
+    <h2>Color</h2>
+    <p class="lead">The whole palette is warm-neutral ground, two accents, three states, and a sunset sweep. It is rationed on purpose: most of any surface is the ramp, and color appears where it carries meaning.</p>
+
+    <h3>the neutral ground</h3>
+    <p>The ground is a warm ramp in two modes, borrowed from techne.institute. Light is parchment and cream, paper warmed slightly so the serif reads quietly. Dark is ink and void, a warm near-black. Both modes share token names; components reference <code>var(--token)</code> and the active mode resolves the value.</p>
+    <div class="swatches">
+      <div class="swrow"><span class="sw" style="background:var(--bg)"></span><span class="tk">--bg</span><span class="rl">page ground &middot; parchment / ink</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--surface)"></span><span class="tk">--surface</span><span class="rl">card and panel fill</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--raised)"></span><span class="tk">--surface-raised</span><span class="rl">hovered controls, table headers</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--inset)"></span><span class="tk">--inset</span><span class="rl">recessed wells, gauge tracks</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--line)"></span><span class="tk">--line</span><span class="rl">hairline, the common divider &middot; bone</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--rule)"></span><span class="tk">--rule</span><span class="rl">a heavier scope rule &middot; stone</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--heading)"></span><span class="tk">--heading</span><span class="rl">titles &middot; charcoal</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--text)"></span><span class="tk">--text</span><span class="rl">body</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--muted)"></span><span class="tk">--muted</span><span class="rl">labels, secondary text</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--faint)"></span><span class="tk">--faint</span><span class="rl">decorative, never load-bearing</span></div>
+    </div>
+
+    <h3>blue &middot; the primary accent</h3>
+    <p>The primary accent is <em>blue</em>, extended from the periwinkle techne.institute uses for its informational state into the system's main interactive color. It is the cool of the same sky the warm ground sits under. Blue carries what the reader does: link text, the primary action on a surface, keyboard focus, and the current selection. It splits into two tokens because a hue that decorates cannot also be read against the ground: <code>--blue</code> for edges and marks, <code>--blue-text</code> for type, deepened in light mode to hold on paper. Blue also serves as the <em>in review</em> state, since the informational register and the interactive register are the same cool family; the state chip carries a word and a dot, so the two uses never confuse. And blue anchors the cool end of the sunset sweep below, a twilight just deeper than this accent, so the primary color and the document's dusk are recognizably one family.</p>
+    <div class="swatches">
+      <div class="swrow"><span class="sw" style="background:var(--blue)"></span><span class="tk">--blue</span><span class="rl">primary &middot; edges, focus, primary action</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--blue-text)"></span><span class="tk">--blue-text</span><span class="rl">primary &middot; links, readable</span></div>
+    </div>
+
+    <h3>ember &middot; the secondary accent</h3>
+    <p>The secondary accent is <em>ember</em>, the warm sandstone tan of the borrowed palette, where it is named both ember and copper. It is the cooperative's own mark, and it carries authority rather than interaction: the section address, the stub rule, the provenance chip's edge, and the secondary action. Held warm against the cool blue, it is the counterpoint that keeps the system from reading as a single-color interface, and like blue it is darkened in light mode for contrast on parchment.</p>
+    <div class="swatches">
+      <div class="swrow"><span class="sw" style="background:var(--ember)"></span><span class="tk">--ember</span><span class="rl">secondary &middot; section marks, stub rule</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--ember-text)"></span><span class="tk">--ember-text</span><span class="rl">secondary &middot; readable, code, addresses</span></div>
+    </div>
+
+    <h3>the state palette</h3>
+    <p>Three state colors express condition, and the rule that governs them matters more than the colors: <em>green</em> for what is operational or ratified, <em>blue</em> for what is in review or simulated, <em>red</em> for what is pending or wants attention. They appear only on instruments, as chips and threshold markers, and never tint a panel, color a heading, or enter a document. Each is always paired with a word and a square mark, so no condition is ever carried by color alone. There is deliberately no second green for a dashboard and the red is muted toward brick rather than alarm.</p>
+    <div class="chiprow">
+      <span class="chip ok"><span class="dot"></span>operational</span>
+      <span class="chip info"><span class="dot"></span>in review</span>
+      <span class="chip warn"><span class="dot"></span>pending</span>
+    </div>
+
+    <h3>sunset &middot; the sky sweep</h3>
+    <p>One range is added that the borrowed palette did not have. <em>Sunset</em> is a six-stop sweep from twilight to last light, blue, violet, rose, coral, amber, gold, where the blue is a deeper sibling of the primary accent, so the sweep closes the loop back to the system's own color. It has two jobs and two orderings. As an <em>atmosphere</em> it runs through the written structure: each section is given a point on the sweep, warm at the top of the document and cooling to twilight at the foot, and that color tints the section's address, the spine beside its heading, and the rules under its subheads, so a reader passes through a sky as they read. As an <em>encoding</em> it serves data, where the warm five stops, ordered by luminance, make a sequential scale that still descends in lightness, surviving grayscale and reading for colorblind viewers, with the magnitude-to-color mapping flipping by mode so the high end always holds contrast. The data treatment is in <a href="#s8">&sect;8</a>.</p>
+    <div class="ramp-legend">
+      <div class="s"><div class="c" style="background:var(--sun-blue)"></div><div class="n">blue</div></div>
+      <div class="s"><div class="c" style="background:var(--sun-violet)"></div><div class="n">violet</div></div>
+      <div class="s"><div class="c" style="background:var(--sun-rose)"></div><div class="n">rose</div></div>
+      <div class="s"><div class="c" style="background:var(--sun-coral)"></div><div class="n">coral</div></div>
+      <div class="s"><div class="c" style="background:var(--sun-amber)"></div><div class="n">amber</div></div>
+      <div class="s"><div class="c" style="background:var(--sun-gold)"></div><div class="n">gold</div></div>
+    </div>
+    <p class="cap">sunset now runs through structure and data both; it still never colors a control or carries the sign of a number</p>
+  </section>
+
+  <section class="sec" id="s3">
+    <div class="addr">&sect;3</div>
+    <h2>Type</h2>
+    <p class="lead">Two families, no third. <em>Libre Baskerville</em>, a transitional serif, carries everything a person reads as prose: headings, body, the names of things. <em>IBM Plex Mono</em> carries everything machine-adjacent: labels, figures, addresses, code, and the whole instrument layer, where tabular numerals keep columns honest. The serif speaks, the mono measures, and the contrast between them does the work a second accent color would otherwise be asked to do.</p>
+    <div class="swatches">
+      <div class="swrow"><span class="sw" style="background:var(--surface)"></span><span class="tk" style="font-family:var(--serif);text-transform:none">Libre Baskerville</span><span class="rl">prose, headings, names</span></div>
+      <div class="swrow"><span class="sw" style="background:var(--surface)"></span><span class="tk">IBM Plex Mono</span><span class="rl">labels, figures, addresses, code</span></div>
+    </div>
+    <p>The scale is small and deliberate: 11px mono labels, 16px serif body, headings stepping to 25 and 38px, figures at 22 to 28px on instruments. Line length on prose is capped near 68 characters so the eye returns cleanly.</p>
+  </section>
+
+  <section class="sec" id="s4">
+    <div class="addr">&sect;4</div>
+    <h2>Rules &amp; grammar</h2>
+    <p class="lead">A rule is a line with a job, and the system keeps exactly four so that a line always means something. Reusing one line for four purposes would make the heaviest tool in the kit say nothing.</p>
+    <div class="rules-demo">
+      <div class="rd"><div class="samp"><div class="hair"></div></div><div class="desc"><b>hairline</b> &middot; <code>--line</code> &middot; the ordinary divider, between rows and fields</div></div>
+      <div class="rd"><div class="samp"><div class="scope"></div></div><div class="desc"><b>scope rule</b> &middot; <code>--rule</code> &middot; a heavier line that opens a section or a register</div></div>
+      <div class="rd"><div class="samp"><div class="settled"></div></div><div class="desc"><b>settled double</b> &middot; closes a total or a ratified principle; nothing follows it</div></div>
+      <div class="rd"><div class="samp"><div class="stub"></div></div><div class="desc"><b>stub</b> &middot; <code>--ember</code>, 2px, short &middot; marks a citable address in the margin</div></div>
+    </div>
+    <p>Addresses use the section sign, tinted with the section's place in the sunset sweep, so a reader sees at a glance how far through the document a citation points; the stub rule in the margin stays ember, the cooperative's own citation mark. Any heading can be linked and cited the way a bylaw cites a clause, which is what makes the specification usable as governance rather than decoration.</p>
+  </section>
+
+  <section class="sec" id="s5">
+    <div class="addr">&sect;5</div>
+    <h2>Layout: two grammars</h2>
+    <p class="lead">The system writes in two layouts, and naming them keeps each honest. The <em>document</em> grammar is for things that are read: a single measured column, stub-and-column structure, generous vertical rhythm, prose that breathes. The <em>instrument</em> grammar is for things that are watched: widescreen, dense, no-scroll where it can manage it, panels on a grid, figures packed at the tight end of the spacing scale. The same tokens serve both; only the density and the width change. A surface that needs document spacing between its parts is really a document, and one that needs to be scanned at a glance is really an instrument, and building each as what it is prevents the muddled middle that reads as neither.</p>
+  </section>
+
+  <section class="sec" id="s6">
+    <div class="addr">&sect;6</div>
+    <h2>Document components</h2>
+    <p class="lead">The pieces a governance text is built from. They are quiet by construction, and the two accents appear exactly where they carry meaning: ember on the address and the citation, blue on the action the reader takes.</p>
+
+    <h3>register</h3>
+    <p>The document's list is a register, not a card grid: numbered rows under a scope rule, each addressable by its number in ember.</p>
+    <div class="reg">
+      <div class="reg-row"><span class="no">&sect;6.1</span><div><div class="t">Members and their work</div><div class="d">The directory, role assignments, and the labor records that feed patronage.</div></div></div>
+      <div class="reg-row"><span class="no">&sect;6.2</span><div><div class="t">What binds us</div><div class="d">Operating agreements, member commitments, and the governance behind them.</div></div></div>
+      <div class="reg-row"><span class="no">&sect;6.3</span><div><div class="t">What we hold</div><div class="d">Capital accounts and the patronage they accrue, across several units.</div></div></div>
+    </div>
+
+    <h3>memorandum</h3>
+    <p>A settled principle is set apart and closed with the double rule, so the eye knows nothing revises it below.</p>
+    <div class="memo">
+      <div class="k">Memorandum</div>
+      <p>A condiment, not a wash. Two accents, each kept to its own place, do more than a panel of color, and the warm ramp carries the hierarchy on its own.</p>
+    </div>
+
+    <h3>provenance &amp; controls</h3>
+    <p>A claim that rests on authority carries its citation in a mono chip with an ember left edge. Controls state what they do and keep the name through the whole flow; the primary action takes the blue border, a secondary action takes the ember border, and keyboard focus is a 2px blue outline, because focus belongs to the reader.</p>
+    <div class="chiprow">
+      <span class="prov"><b>&sect;5.3.2</b> &middot; patronage formula, ratified 2026-04-12</span>
+    </div>
+    <div class="chiprow">
+      <button class="btn primary" type="button">Publish</button>
+      <button class="btn secondary" type="button">Open record</button>
+      <button class="btn" type="button">Save draft</button>
+    </div>
+  </section>
+
+  <section class="sec" id="s7">
+    <div class="addr">&sect;7</div>
+    <h2>Instrument elements</h2>
+    <p class="lead">The key pieces of the instrument grammar, the surfaces a cooperative builds to watch itself. This is the load-bearing subset of the fuller catalog: the panel that contains, the tile that reads a number, the table that holds the books, and the small charts that show shape. All inherit the tokens above unchanged; figures are monochrome and sign is the accountant's parenthesis, never a color.</p>
+
+    <h3>panels &amp; tiles</h3>
+    <p>The panel is the universal container: a header, an optional toolbar, a body, an optional footer, meeting the page at rules with no shadow. A card is a panel without a toolbar. The tile is the atom of the instrument layer, read three ways.</p>
+    <div class="stage"><div class="grid3">
+      <div class="tile"><div class="tl"><span>members</span><span class="chip ok" style="padding:1px 6px"><span class="dot"></span>live</span></div><div class="tf num">23</div><div class="ts">+2 this quarter</div></div>
+      <div class="tile"><div class="tl"><span>net, period</span></div><div class="tf num">10,770.00</div><div class="ts">space ops (6,180.00)</div></div>
+      <div class="tile"><div class="tl"><span>reserve</span></div><div class="tf num">71%</div><div class="ts" style="margin-top:6px"><div class="gauge"><div class="g" style="width:71%"></div><div class="tick" style="left:80%"></div></div></div></div>
+    </div></div>
+    <p class="cap">stat, delta, and threshold &middot; the delta's outflow is a parenthesis, not a red; the threshold's target is a tick, not a color change</p>
+
+    <h3>the dense table</h3>
+    <p>The accounting discipline made interactive: mono numerals, right-aligned, parentheses for negatives, a sticky header, and the double rule closing the total.</p>
+    <div class="stage"><div style="border:1px solid var(--line)"><table class="dt">
+      <thead><tr><th>account</th><th>status</th><th class="r">period</th><th class="r">ytd</th></tr></thead>
+      <tbody>
+        <tr><td class="s">Membership dues</td><td><span class="chip ok" style="padding:1px 6px"><span class="dot"></span>posted</span></td><td class="r">4,200.00</td><td class="r">21,000.00</td></tr>
+        <tr><td class="s">Program revenue</td><td><span class="chip ok" style="padding:1px 6px"><span class="dot"></span>posted</span></td><td class="r">12,750.00</td><td class="r">38,250.00</td></tr>
+        <tr><td class="s">Grants</td><td><span class="chip info" style="padding:1px 6px"><span class="dot"></span>pledged</span></td><td class="r">8,000.00</td><td class="r">8,000.00</td></tr>
+        <tr><td class="s">Space operations</td><td><span class="chip warn" style="padding:1px 6px"><span class="dot"></span>accrued</span></td><td class="r">(6,180.00)</td><td class="r">(30,900.00)</td></tr>
+        <tr class="total"><td class="s">Net activity</td><td></td><td class="r">10,770.00</td><td class="r">28,350.00</td></tr>
+      </tbody>
+    </table></div></div>
+
+    <h3>small charts</h3>
+    <p>Shape where the trend matters more than the values. A sparkline for a single line, a bar-gauge for parts of a whole, a bullet for a measure against a target, all monochrome, the accent reserved for the live point.</p>
+    <div class="stage"><div class="grid3">
+      <div class="panel"><div class="ph"><span class="pt">dues &middot; 12mo</span></div><div class="pb">
+        <svg viewBox="0 0 120 36" width="100%" height="40" preserveAspectRatio="none"><polyline points="0,28 11,26 22,29 33,22 44,24 55,18 66,20 77,14 88,16 99,9 110,11 120,6" fill="none" stroke="var(--muted)" stroke-width="1.5"/><circle cx="120" cy="6" r="2.4" fill="var(--blue-text)"/></svg>
+      </div></div>
+      <div class="panel"><div class="ph"><span class="pt">allocation</span></div><div class="pb" style="display:flex;flex-direction:column;gap:9px">
+        <div><div class="mono" style="font-size:10px;color:var(--muted);display:flex;justify-content:space-between"><span>operations</span><span class="num">42%</span></div><div class="gauge" style="margin-top:3px"><div class="g" style="width:42%"></div></div></div>
+        <div><div class="mono" style="font-size:10px;color:var(--muted);display:flex;justify-content:space-between"><span>reserve</span><span class="num">33%</span></div><div class="gauge" style="margin-top:3px"><div class="g" style="width:33%"></div></div></div>
+        <div><div class="mono" style="font-size:10px;color:var(--muted);display:flex;justify-content:space-between"><span>programs</span><span class="num">25%</span></div><div class="gauge" style="margin-top:3px"><div class="g" style="width:25%"></div></div></div>
+      </div></div>
+      <div class="panel"><div class="ph"><span class="pt">vs target</span></div><div class="pb">
+        <svg viewBox="0 0 160 30" width="100%" height="34"><rect x="0" y="6" width="160" height="18" fill="var(--inset)" stroke="var(--line)"/><rect x="0" y="6" width="64" height="18" fill="var(--raised)"/><rect x="0" y="11" width="118" height="8" fill="var(--muted)"/><rect x="132" y="3" width="2" height="24" fill="var(--heading)"/></svg>
+        <div class="cap">measure against a target tick</div>
+      </div></div>
+    </div></div>
+  </section>
+
+  <section class="sec" id="s8">
+    <div class="addr">&sect;8</div>
+    <h2>Data visualization with sunset</h2>
+    <p class="lead">The sunset range earns its place in one layer only: the encoding of data. The interface stays two-accent and quiet; the charts are where a controlled amount of color does real work, telling magnitudes apart and telling categories apart.</p>
+
+    <h3>sequential &middot; magnitude as warmth</h3>
+    <p>For a single quantity that varies, the range is used as a sequential scale, low to high. Because the range is ordered by luminance, the scale is luminance-honest: it still descends in lightness, so it survives a grayscale print and reads for a colorblind viewer. One rule makes it work in both modes: the magnitude-to-color assignment <em>flips</em> by mode, so the high end is always the end that holds contrast against the ground, violet glowing up to gold on the dark ink, gold deepening down to violet on the light parchment.</p>
+    <div class="stage"><div class="panel"><div class="ph"><span class="pt">posting density</span><span class="chip info" style="padding:1px 6px"><span class="dot"></span>simulated</span></div><div class="pb">
+      <div class="heat">
+        <span class="cell h1"></span><span class="cell h2"></span><span class="cell h1"></span><span class="cell h3"></span><span class="cell h4"></span><span class="cell h2"></span><span class="cell h5"></span><span class="cell h3"></span><span class="cell h2"></span><span class="cell h4"></span>
+        <span class="cell h2"></span><span class="cell h0"></span><span class="cell h3"></span><span class="cell h5"></span><span class="cell h3"></span><span class="cell h1"></span><span class="cell h4"></span><span class="cell h2"></span><span class="cell h3"></span><span class="cell h1"></span>
+        <span class="cell h0"></span><span class="cell h2"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h5"></span><span class="cell h4"></span><span class="cell h2"></span><span class="cell h3"></span><span class="cell h1"></span><span class="cell h4"></span>
+        <span class="cell h3"></span><span class="cell h1"></span><span class="cell h2"></span><span class="cell h4"></span><span class="cell h3"></span><span class="cell h5"></span><span class="cell h1"></span><span class="cell h2"></span><span class="cell h4"></span><span class="cell h3"></span>
+      </div>
+      <div class="ramp-legend" style="margin-top:12px">
+        <div class="s"><div class="c h1"></div><div class="n">less</div></div>
+        <div class="s"><div class="c h2"></div><div class="n"></div></div>
+        <div class="s"><div class="c h3"></div><div class="n"></div></div>
+        <div class="s"><div class="c h4"></div><div class="n"></div></div>
+        <div class="s"><div class="c h5"></div><div class="n">more</div></div>
+      </div>
+    </div></div></div>
+
+    <h3>categorical &middot; telling sources apart</h3>
+    <p>For a few distinct categories, well-separated stops from the range stand in for the parts, with a direct legend rather than a color key the reader must memorize. Three or four categories is the ceiling; past that, the honest move is small multiples, not more hues.</p>
+    <div class="stage"><div class="panel"><div class="ph"><span class="pt">flows by source</span></div><div class="pb">
+      <div class="bars">
+        <div class="bar"><div class="seg seg-g" style="height:22px"></div><div class="seg seg-c" style="height:30px"></div><div class="seg seg-v" style="height:16px"></div></div>
+        <div class="bar"><div class="seg seg-g" style="height:30px"></div><div class="seg seg-c" style="height:26px"></div><div class="seg seg-v" style="height:20px"></div></div>
+        <div class="bar"><div class="seg seg-g" style="height:26px"></div><div class="seg seg-c" style="height:38px"></div><div class="seg seg-v" style="height:18px"></div></div>
+        <div class="bar"><div class="seg seg-g" style="height:40px"></div><div class="seg seg-c" style="height:30px"></div><div class="seg seg-v" style="height:24px"></div></div>
+        <div class="bar"><div class="seg seg-g" style="height:34px"></div><div class="seg seg-c" style="height:42px"></div><div class="seg seg-v" style="height:22px"></div></div>
+        <div class="bar"><div class="seg seg-g" style="height:46px"></div><div class="seg seg-c" style="height:36px"></div><div class="seg seg-v" style="height:28px"></div></div>
+      </div>
+      <div class="vlegend"><span class="lk"><span class="sw seg-g"></span>dues</span><span class="lk"><span class="sw seg-c"></span>programs</span><span class="lk"><span class="sw seg-v"></span>grants</span></div>
+    </div></div></div>
+
+    <div class="memo">
+      <div class="k">Memorandum &middot; the honest trade</div>
+      <p>The instrument catalog encodes magnitude in a single monochrome ramp, on the argument that hue invents an order the data lacks and fails colorblind readers. A sunset scale does add hue to magnitude, the thing that principle avoided, and this system now spends sunset more widely still, letting it color the written structure as atmosphere. Two guards keep that defensible: the scale stays luminance-ordered, so it degrades to grayscale, and sunset is held off every control and every number's sign, so it colors the path through the document, never the decisions made along it. This is a deliberate loosening of an earlier restraint, recorded here so it can be weighed rather than assumed.</p>
+    </div>
+  </section>
+
+  <section class="sec" id="s9">
+    <div class="addr">&sect;9</div>
+    <h2>Accessibility</h2>
+    <p class="lead">Contrast is verified in both modes, not assumed. Body text exceeds AAA on both grounds; the blue and ember readable tokens hold AA for links and labels; the three state colors hold AA at chip sizes; and the blue and ember edges clear the contrast floor for borders and focus rings.</p>
+    <p>No condition is signaled by color alone: every state chip pairs its color with a word and a square mark, and every figure shows its sign in a parenthesis, never a hue. Links are underlined so affordance survives grayscale and color blindness. Keyboard focus is a visible 2px blue outline wherever it lands. The sunset range is ordered by luminance precisely so that a sequential scale degrades gracefully to grayscale and remains legible to colorblind viewers. <code>color-scheme</code> is declared so native controls render correctly in both modes, and <code>prefers-reduced-motion</code> is honored everywhere. Where distinctiveness and accessibility conflict, distinctiveness loses.</p>
+  </section>
+
+  <section class="sec" id="s10">
+    <div class="addr">&sect;10</div>
+    <h2>For the agent</h2>
+    <p class="lead">An agent producing a surface in this system works inside these constraints, and runs the audit against the rendered page before publishing. The constraints are negative on purpose: they are what hold the line when generation drifts toward the generic.</p>
+    <pre class="agent">GROUND   warm-neutral tokens only; never a tinted field.
+
+ACCENTS  blue is PRIMARY (links, primary action, focus,
+         selection). ember is SECONDARY (section marks,
+         stub rule, provenance edge, secondary action).
+         edges and marks only; never fill a panel or a box.
+
+SUNSET   six-stop sweep, blue..gold. ATMOSPHERE: each
+         section is tinted by its place in the sweep, on its
+         address, its heading spine, and its subhead rules.
+         DATA: the warm five as a luminance-ordered scale,
+         the mapping flipping by mode. never on a control,
+         never the sign of a number.
+
+STATE    green / blue / red, instruments only, always with
+         a word and a square mark; never color alone. sign
+         of a number is the parenthesis, never a color.
+
+SHAPE    radius 2px on controls, 0 on surfaces; no gradient,
+         no blur, no shadow; motion only in answer to action.
+
+TYPE     Libre Baskerville for prose; IBM Plex Mono for
+         labels, figures, addresses, code, and instruments.</pre>
+    <ol class="audit">
+      <li>Search the stylesheet: zero matches for gradient, blur, box-shadow, and radius above 2px.</li>
+      <li>Confirm the ground is the neutral ramp, not a tinted or colored field.</li>
+      <li>Confirm blue carries the primary action, links, and focus; ember carries addresses and the secondary action; neither fills a panel.</li>
+      <li>Confirm sunset appears only as section atmosphere, on addresses, spines, and subhead rules, or inside a chart, and never on a control or a number's sign; confirm the heat mapping flips with the mode.</li>
+      <li>Confirm every state chip carries a word and a square mark, and no figure shows sign by color.</li>
+      <li>Confirm negative figures use parentheses and numeric columns are mono and right-aligned.</li>
+      <li>Confirm the mode toggle works, shows the mode it switches to as a word, and persists.</li>
+      <li>Confirm contrast holds in both modes, and that nothing essential lives only behind a hover.</li>
+    </ol>
+  </section>
+
+  <section class="sec" id="s11">
+    <div class="addr">&sect;11</div>
+    <h2>Limits &amp; revision</h2>
+    <p class="lead">This system is deliberately scoped, and naming what it leaves out is the same discipline that holds the rest. It is tuned for dense operational and financial surfaces and measured governance documents, on pointer-and-keyboard screens, in a Latin script. It underserves touch-first and small-screen use, data visualization beyond the basic and sunset vocabularies, geographic and real-time views, and the first-run experience, each of which would need a deliberate extension that can state its own reason here.</p>
+    <p>Identity rests on referents, and the referents are now a small constellation: the warm parchment and ink of the institute next door, the cool blue of its informational color raised to the primary, the ember of its warm accent held as the secondary, and a sunset range named for the sky the same ground sits under. The revision trigger is explicit: when a stranger can name these choices as someone else's defaults, the document is due for a new version, and until then a change requires a reason that can be written down here. Two positions are worth keeping in view as that conversation continues: the refusal to carry the sign of a number in color, which departs from common dashboard practice, and the decision to let the sunset range run through the written structure as atmosphere as well as through the charts as encoding, which is now where this system spends color most freely, a deliberate loosening of its earlier restraint that should be revisited the moment the page reads as decorated rather than structured.</p>
+  </section>
+
+
+  <section class="sec" id="s12">
+    <div class="addr">&sect;12</div>
+    <h2>Site application protocol</h2>
+    <p class="lead">How v4 is applied across every page of this repository. The protocol defines the canonical page shell, the sitemap and page types, the navigation convention, and the color system mapping from v4 tokens to domain-specific usage in Daybook and Common Work. Every new page in this repo conforms to this section before publishing.</p>
+
+    <h3>sitemap</h3>
+    <p>All published paths, their page type, their sunset-sweep position, and their v4 conformance status.</p>
+    <div style="border:1px solid var(--line);margin:var(--s4) 0"><table class="dt">
+      <thead>
+        <tr>
+          <th>Path</th>
+          <th>Title</th>
+          <th>Type</th>
+          <th>Sweep position</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/</code></td>
+          <td class="s">Landing</td>
+          <td>Document</td>
+          <td>Gold</td>
+          <td><span class="chip info" style="padding:1px 6px"><span class="dot"></span>partial</span></td>
+        </tr>
+        <tr>
+          <td><code>/design-system/</code></td>
+          <td class="s">Design System v4</td>
+          <td>Reference</td>
+          <td>Full sweep</td>
+          <td><span class="chip ok" style="padding:1px 6px"><span class="dot"></span>canonical</span></td>
+        </tr>
+        <tr>
+          <td><code>/architecture/</code></td>
+          <td class="s">Unified Architecture</td>
+          <td>Specification</td>
+          <td>Gold → Blue</td>
+          <td><span class="chip info" style="padding:1px 6px"><span class="dot"></span>partial</span></td>
+        </tr>
+        <tr>
+          <td><code>/common-work/</code></td>
+          <td class="s">Common Work</td>
+          <td>Interactive instrument</td>
+          <td>Amber / Coral</td>
+          <td><span class="chip info" style="padding:1px 6px"><span class="dot"></span>partial</span></td>
+        </tr>
+        <tr>
+          <td><code>/daybook/</code></td>
+          <td class="s">The Daybook — Full Spec</td>
+          <td>Specification</td>
+          <td>Blue / Violet</td>
+          <td><span class="chip info" style="padding:1px 6px"><span class="dot"></span>partial</span></td>
+        </tr>
+        <tr>
+          <td><code>/daybook/two-layers/</code></td>
+          <td class="s">Settled &amp; Ripening</td>
+          <td>Interactive artifact</td>
+          <td>Blue</td>
+          <td><span class="chip info" style="padding:1px 6px"><span class="dot"></span>partial</span></td>
+        </tr>
+        <tr>
+          <td><code>/daybook/onboarding/</code></td>
+          <td class="s">A Guided Introduction</td>
+          <td>Interactive artifact</td>
+          <td>Gold → Blue</td>
+          <td><span class="chip info" style="padding:1px 6px"><span class="dot"></span>partial</span></td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p class="cap">Partial: uses v4 color palette and type families but may use non-canonical token names. Canonical: this page. Target: all pages migrate to canonical token names.</p>
+
+    <h3>page types</h3>
+    <p>Three kinds of surface, with different layout grammars:</p>
+    <div class="reg">
+      <div class="reg-row"><span class="no">&sect;12.1</span><div><div class="t">Document</div><div class="d">Single measured column, stub-and-address structure, generous vertical rhythm. Uses the <code>.mast</code> masthead, <code>.sec</code> sections with citable <code>.addr</code> addresses, the scope-rule register, and the memo component. The landing page and the architecture spec are documents.</div></div></div>
+      <div class="reg-row"><span class="no">&sect;12.2</span><div><div class="t">Interactive artifact</div><div class="d">Widescreen or full-viewport, dense, three-column or canvas + panel layout. Uses v4 tokens for all surface and type colors; domain-specific accent colors (Daybook bloom kinds, Common Work stages) are layered on top as extensions, never replacing the base token system. The two-layers bloom and the guided introduction are interactive artifacts.</div></div></div>
+      <div class="reg-row"><span class="no">&sect;12.3</span><div><div class="t">Specification</div><div class="d">Hybrid: document grammar for the prose, instrument grammar for code blocks, tables, and state diagrams. Rail navigation on the left. The Daybook full spec and this design system are specifications.</div></div></div>
+    </div>
+
+    <h3>canonical page shell</h3>
+    <p>Every page in this repo begins with this shell. Copy verbatim; fill in the bracketed fields; add page-type-specific styles after the closing token block comment.</p>
+    <pre class="agent">&lt;!DOCTYPE html&gt;
+&lt;html lang="en" data-mode="dark"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+&lt;meta name="color-scheme" content="dark light"&gt;
+&lt;meta name="description" content="[page description]"&gt;
+&lt;title&gt;[Page Title] &middot; Techne Co-op&lt;/title&gt;
+&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600&amp;family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"&gt;
+&lt;style&gt;
+  /* ── V4 TOKENS — copy from /design-system/ §DS.tokens ── */
+  :root {
+    --serif:"Libre Baskerville",Georgia,serif;
+    --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+    --s1:4px; --s2:8px; --s3:12px; --s4:16px;
+    --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+    --dur:.4s; --micro:.16s; --ease:cubic-bezier(.4,0,.2,1);
+    --sun-gold:#EAB668; --sun-amber:#E09A52;
+    --sun-coral:#D1755A; --sun-rose:#B45C7C;
+    --sun-violet:#6E5494; --sun-blue:#5476B8;
+  }
+  html[data-mode="dark"] {
+    --bg:#0F0F12; --inset:#08080A; --surface:#16161B; --raised:#232329;
+    --line:#2A2A30; --rule:#3A3A42;
+    --heading:#E8E4DF; --text:#CFCBC4; --muted:#8A857E; --faint:#5A554F;
+    --blue:#6A8AC4; --blue-text:#97B5E8;
+    --ember:#C4956A; --ember-text:#D4A57A;
+    --ok:#6A9A6A; --info:#6A8AC4; --warn:#C46A6A;
+  }
+  html[data-mode="light"] {
+    --bg:#F7F5F0; --inset:#EBE7DF; --surface:#FCFBF8; --raised:#FEFDFB;
+    --line:#D8D3C8; --rule:#9A958A;
+    --heading:#1A1A1F; --text:#2E2C28; --muted:#646058; --faint:#A39E92;
+    --blue:#4A6FB0; --blue-text:#39588F;
+    --ember:#8A6A4A; --ember-text:#6F5436;
+    --ok:#4A7A4A; --info:#4A6FB0; --warn:#A84F4C;
+  }
+  /* ── PAGE-SPECIFIC STYLES BELOW ── */
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;button id="modeBtn" class="toggle" aria-label="Switch color mode"&gt;light&lt;/button&gt;
+&lt;!-- page content --&gt;
+&lt;script&gt;
+(function(){
+  var root=document.documentElement,btn=document.getElementById('modeBtn'),stored=null;
+  try{stored=localStorage.getItem('commons-mode');}catch(e){}
+  var m=stored||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');
+  root.setAttribute('data-mode',m);
+  btn.textContent=m==='dark'?'light':'dark';
+  btn.addEventListener('click',function(){
+    var next=root.getAttribute('data-mode')==='dark'?'light':'dark';
+    root.setAttribute('data-mode',next);
+    btn.textContent=next==='dark'?'light':'dark';
+    try{localStorage.setItem('commons-mode',next);}catch(e){}
+  });
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+    <h3>navigation protocol</h3>
+    <p>Every page carries a navigation reference to its parent and to the design system. The masthead <code>.kick</code> line links back to the root. The page footer links to the design system reference. No global nav bar is imposed on interactive artifacts (they use their own three-column rail); document and specification pages use the masthead link convention.</p>
+
+    <div class="memo">
+      <div class="k">Convention — masthead kick</div>
+      <p>The kick line in every page's masthead reads: <em>Techne Co-op &middot; [Section Name]</em>, where "Techne Co-op" is an anchor linking back to <code>/</code>. This is the sole persistent wayfinding element shared by all page types.</p>
+    </div>
+
+    <p>Footer: every page footer includes a link to <code>/design-system/</code> labeled "Design System v4" and to the architecture spec at <code>/architecture/</code> labeled "Architecture". These are the two canonical reference pages.</p>
+
+    <h3>color system mapping</h3>
+    <p>Domain-specific colors in the Daybook and Common Work extend v4, not replace it. They are layered on top of the base token system as named constants, and they are chosen from within the sunset palette where possible, so the instruments feel native to the document atmosphere.</p>
+
+    <div class="stage"><table class="dt">
+      <thead><tr><th>Domain color</th><th>v4 token / value</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td class="s">Daybook · Reflection</td><td><code>--sun-blue #5476B8</code></td><td>Blue; observer-level; the coolest kind</td></tr>
+        <tr><td class="s">Daybook · Contribution</td><td><code>--sun-amber #E09A52</code></td><td>Amber; labor and value in</td></tr>
+        <tr><td class="s">Daybook · Exchange</td><td><code>--sun-violet #6E5494</code></td><td>Violet; transfer and transaction</td></tr>
+        <tr><td class="s">Daybook · Clearing</td><td><code>#16a34a</code> (green)</td><td>State: resolved / ok; settlement</td></tr>
+        <tr><td class="s">Work · Captured</td><td><code>#b45309</code> (amber-700)</td><td>Darker than --sun-amber; new / noticed</td></tr>
+        <tr><td class="s">Work · Offered</td><td><code>--sun-amber #E09A52</code></td><td>Proposed; warm like contribution</td></tr>
+        <tr><td class="s">Work · Held</td><td><code>--sun-coral #D1755A</code></td><td>In work; the middle of the sweep</td></tr>
+        <tr><td class="s">Work · Standing</td><td><code>--sun-rose #B45C7C</code></td><td>Ready for review</td></tr>
+        <tr><td class="s">Work · Socialized</td><td><code>--sun-violet #6E5494</code></td><td>Acknowledged; cooling toward resolution</td></tr>
+        <tr><td class="s">Work · Resolved</td><td><code>--sun-blue #5476B8</code></td><td>Complete; the coolest stage — settled, clear</td></tr>
+        <tr><td class="s">Work · Composted</td><td><code>#52525b</code> (zinc)</td><td>Retired; neutral; no longer in the sweep</td></tr>
+      </tbody>
+    </table></div>
+    <p class="cap">The arc from Captured to Resolved mirrors the sunset sweep from gold/amber through coral, rose, violet, to blue — the same sky the written structure moves through, with resolution at dusk.</p>
+
+    <h3>conformance checklist (this repo)</h3>
+    <p>Run this against every page before merge. It extends the agent audit in <a href="#s10">&sect;10</a> with repo-specific requirements.</p>
+    <ol class="audit">
+      <li>All CSS uses canonical v4 token names (<code>--bg</code>, <code>--surface</code>, <code>--raised</code>, <code>--inset</code>, <code>--heading</code>, <code>--text</code>, <code>--muted</code>, <code>--faint</code>, <code>--blue</code>, <code>--blue-text</code>, <code>--ember</code>, <code>--ember-text</code>, <code>--sun-*</code>). No ad-hoc color constants that duplicate canonical tokens under different names.</li>
+      <li>Mode toggle present, reads the word of the mode it switches to, and stores preference in <code>localStorage</code> under the key <code>commons-mode</code>.</li>
+      <li>Masthead kick line links back to <code>/</code> and identifies the section by name.</li>
+      <li>Page title follows the pattern: <em>[Page Title] · Techne Co-op</em>.</li>
+      <li>Footer links to <code>/design-system/</code> and to <code>/architecture/</code>.</li>
+      <li>Domain-specific colors (Daybook kinds, Common Work stages) are chosen from the sunset sweep or the state palette, never invented outside the v4 system.</li>
+      <li>No <code>box-shadow</code>, no <code>gradient</code>, no <code>blur</code>, no <code>border-radius</code> above 2px on controls or 0px on surfaces.</li>
+      <li>All fonts loaded from the canonical Google Fonts import: Libre Baskerville (400, 700, italic 400) + IBM Plex Mono (400, 500, 600).</li>
+    </ol>
+  </section>
+
+  <footer>
+    <div class="row">
+      <span>Techne Design System v4</span>
+      <span>palette borrowed from techne.institute, extended</span>
+      <span>blue primary &middot; ember secondary &middot; sunset sweep, woven</span>
+      <span>RegenHub, LCA &middot; Boulder, Colorado &middot; 2026</span>
+    </div>
+    <div class="row" style="margin-top:var(--s3)">
+      <a href="../">Techne Co-op site</a>
+      <a href="../architecture/">Architecture spec</a>
+      <a href="../common-work/">Common Work</a>
+      <a href="../daybook/">Daybook spec</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var btn  = document.getElementById('modeBtn');
+  var stored = null;
+  try { stored = localStorage.getItem('commons-mode'); } catch(e) {}
+  var m = stored || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  root.setAttribute('data-mode', m);
+  btn.textContent = m === 'dark' ? 'light' : 'dark';
+  btn.addEventListener('click', function () {
+    var next = root.getAttribute('data-mode') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-mode', next);
+    btn.textContent = next === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('commons-mode', next); } catch(e) {}
+  });
+})();
+</script>
+</body>
+</html>
