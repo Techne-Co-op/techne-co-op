@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en" data-mode="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture — Techne Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ─────────────────────────────────────────────── */
+:root {
+  --gold:    #f59e0b;
+  --amber:   #d97706;
+  --orange:  #ea580c;
+  --coral:   #dc2626;
+  --rose:    #e11d48;
+  --violet:  #9333ea;
+  --blue:    #2563eb;
+  --ember:   #92400e;
+
+  --stage-captured:   #b45309;
+  --stage-offered:    #d97706;
+  --stage-held:       #ea580c;
+  --stage-standing:   #dc2626;
+  --stage-socialized: #9333ea;
+  --stage-resolved:   #2563eb;
+  --stage-composted:  #52525b;
+
+  --kind-reflection:   #2563eb;
+  --kind-contribution: #d97706;
+  --kind-exchange:     #9333ea;
+  --kind-clearing:     #16a34a;
+
+  --bg:   #0f0f0f;
+  --bg2:  #171717;
+  --bg3:  #1f1f1f;
+  --bg4:  #2a2a2a;
+  --line: #2e2e2e;
+  --muted:#71717a;
+  --dim:  #a1a1aa;
+  --body: #d4d4d8;
+  --head: #fafafa;
+
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Libre Baskerville', Georgia, serif;
+
+  --rail-w: 240px;
+}
+[data-mode="light"] {
+  --bg:   #fafaf9;
+  --bg2:  #f5f5f4;
+  --bg3:  #e7e5e4;
+  --bg4:  #d6d3d1;
+  --line: #e2e8f0;
+  --muted:#78716c;
+  --dim:  #57534e;
+  --body: #292524;
+  --head: #0f0f0f;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--serif);
+  background: var(--bg);
+  color: var(--body);
+  line-height: 1.7;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── Rail nav ───────────────────────────────────────────── */
+.rail {
+  width: var(--rail-w);
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+  padding: 1.5rem 0 2rem;
+}
+.rail-logo {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0 1.25rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1rem;
+}
+.rail-logo strong { color: var(--head); display: block; font-size: .75rem; margin-bottom: .2rem; }
+.rail-section {
+  font-family: var(--mono);
+  font-size: .6rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: .8rem 1.25rem .3rem;
+}
+.rail a {
+  display: block;
+  padding: .32rem 1.25rem;
+  font-family: var(--mono);
+  font-size: .72rem;
+  color: var(--dim);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+.rail a:hover, .rail a.active {
+  color: var(--head);
+  border-left-color: var(--amber);
+}
+.rail a.sub { padding-left: 2rem; font-size: .68rem; }
+
+/* ── Main ───────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  max-width: 900px;
+  padding: 3rem 3.5rem 6rem;
+}
+@media (max-width: 900px) {
+  .main { padding: 2rem 1.5rem 4rem; }
+}
+
+/* ── Section ────────────────────────────────────────────── */
+.section {
+  margin-bottom: 4rem;
+  padding-top: 1rem;
+}
+.section-label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: .5rem;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--head);
+  line-height: 1.25;
+  margin-bottom: .75rem;
+}
+h2 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--head);
+  margin-bottom: .5rem;
+  margin-top: 2.5rem;
+}
+h3 {
+  font-family: var(--mono);
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--amber);
+  letter-spacing: .04em;
+  margin-bottom: .5rem;
+  margin-top: 1.75rem;
+}
+p { margin-bottom: 1rem; color: var(--body); }
+.lead { font-size: 1.05rem; color: var(--dim); margin-bottom: 1.5rem; }
+
+/* ── Code blocks ────────────────────────────────────────── */
+pre {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1.25rem 1.5rem;
+  overflow-x: auto;
+  margin: 1rem 0 1.5rem;
+  font-family: var(--mono);
+  font-size: .78rem;
+  line-height: 1.6;
+  color: var(--body);
+}
+.kw  { color: var(--violet); }
+.ty  { color: var(--gold); }
+.str { color: var(--kind-contribution); }
+.cmt { color: var(--muted); font-style: italic; }
+.num { color: var(--blue); }
+.key { color: var(--coral); }
+.punc{ color: var(--dim); }
+
+/* ── Tables ─────────────────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; margin: 1rem 0 1.5rem; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: .76rem;
+}
+th {
+  text-align: left;
+  padding: .5rem .75rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: .65rem;
+}
+td {
+  padding: .5rem .75rem;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  color: var(--body);
+}
+tr:last-child td { border-bottom: none; }
+td code { background: var(--bg3); padding: .1em .35em; border-radius: 3px; font-size: .75rem; }
+
+/* ── Color swatches ─────────────────────────────────────── */
+.swatch {
+  display: inline-block;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+/* ── Pill tags ──────────────────────────────────────────── */
+.pill {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: .65rem;
+  padding: .15em .6em;
+  border-radius: 100px;
+  letter-spacing: .04em;
+  border: 1px solid;
+  margin: .1em .2em .1em 0;
+}
+.pill-reflection   { border-color: var(--kind-reflection); color: var(--kind-reflection); }
+.pill-contribution { border-color: var(--kind-contribution); color: var(--kind-contribution); }
+.pill-exchange     { border-color: var(--kind-exchange); color: var(--kind-exchange); }
+.pill-clearing     { border-color: var(--kind-clearing); color: var(--kind-clearing); }
+.pill-member       { border-color: var(--amber); color: var(--amber); }
+.pill-observer     { border-color: var(--muted); color: var(--muted); }
+
+/* ── Stage strip ────────────────────────────────────────── */
+.stage-strip {
+  display: flex;
+  gap: 0;
+  margin: 1.25rem 0 1.75rem;
+  border-radius: 6px;
+  overflow: hidden;
+  font-family: var(--mono);
+  font-size: .65rem;
+  border: 1px solid var(--line);
+}
+.stage-cell {
+  flex: 1;
+  padding: .6rem .5rem;
+  text-align: center;
+  color: #fff;
+  font-weight: 500;
+  letter-spacing: .04em;
+  line-height: 1.3;
+}
+.stage-cell small { display: block; font-size: .58rem; opacity: .7; margin-top: .2rem; }
+.sc-captured   { background: var(--stage-captured); }
+.sc-offered    { background: var(--stage-offered); }
+.sc-held       { background: var(--stage-held); }
+.sc-standing   { background: var(--stage-standing); }
+.sc-socialized { background: var(--stage-socialized); }
+.sc-resolved   { background: var(--stage-resolved); }
+.sc-composted  { background: var(--stage-composted); }
+
+/* ── State machine diagram ──────────────────────────────── */
+.sm-wrap {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1rem 0 1.5rem;
+  overflow-x: auto;
+}
+.sm-flow {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+.sm-node {
+  padding: .4rem .85rem;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: .72rem;
+  font-weight: 500;
+  color: #fff;
+  white-space: nowrap;
+}
+.sm-arrow {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: .85rem;
+  padding: 0 .1rem;
+}
+.sm-row { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+.sm-row:last-child { margin-bottom: 0; }
+.sm-label {
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--muted);
+  min-width: 90px;
+  padding-top: .45rem;
+}
+
+/* ── Invariant block ────────────────────────────────────── */
+.invariant {
+  background: var(--bg3);
+  border-left: 3px solid var(--amber);
+  padding: 1rem 1.25rem;
+  margin: 1rem 0 1.5rem;
+  border-radius: 0 6px 6px 0;
+}
+.invariant .inv-label {
+  font-family: var(--mono);
+  font-size: .62rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: .35rem;
+}
+.invariant p { margin: 0; color: var(--body); }
+
+/* ── Binding diagram ────────────────────────────────────── */
+.binding-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: .5rem 1rem;
+  align-items: start;
+  margin: 1.25rem 0 1.75rem;
+}
+.bind-system {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+}
+.bind-system h4 {
+  font-family: var(--mono);
+  font-size: .7rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: .75rem;
+}
+.bind-row {
+  font-family: var(--mono);
+  font-size: .7rem;
+  color: var(--dim);
+  padding: .2rem 0;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.bind-row:last-child { border-bottom: none; }
+.bind-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  align-items: center;
+  padding-top: 2.5rem;
+}
+.bind-link {
+  font-family: var(--mono);
+  font-size: .65rem;
+  color: var(--muted);
+  text-align: center;
+  padding: .3rem .5rem;
+  background: var(--bg4);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ── Dark/light toggle ──────────────────────────────────── */
+.mode-btn {
+  position: fixed;
+  top: 1rem; right: 1rem;
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  color: var(--dim);
+  font-family: var(--mono);
+  font-size: .68rem;
+  padding: .35rem .75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .15s;
+  z-index: 100;
+}
+.mode-btn:hover { background: var(--bg4); color: var(--head); }
+
+/* ── Divider ────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 3rem 0;
+}
+
+/* ── Field table ────────────────────────────────────────── */
+.field-table td:first-child { color: var(--coral); font-weight: 500; }
+.field-table td:nth-child(2) { color: var(--violet); }
+.required { color: var(--coral) !important; }
+.optional { color: var(--muted) !important; }
+
+/* ── Logic rule ─────────────────────────────────────────── */
+.rule-block {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  margin: .75rem 0;
+  font-family: var(--mono);
+  font-size: .76rem;
+  color: var(--body);
+  line-height: 1.55;
+}
+.rule-block strong { color: var(--head); }
+
+/* ── Map SVG ────────────────────────────────────────────── */
+.system-map {
+  margin: 1.5rem 0 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* ── Bloom small preview ────────────────────────────────── */
+.kind-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: .75rem;
+  margin: 1rem 0 1.5rem;
+}
+.kind-card {
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: .85rem 1rem;
+}
+.kind-card .kc-name {
+  font-family: var(--mono);
+  font-size: .68rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: .35rem;
+}
+.kind-card .kc-gate {
+  font-family: var(--mono);
+  font-size: .62rem;
+  margin-bottom: .3rem;
+}
+.kind-card p { font-size: .82rem; color: var(--dim); margin: 0; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<!-- Rail -->
+<nav class="rail">
+  <div class="rail-logo">
+    <strong>Architecture</strong>
+    Daybook · Common Work
+  </div>
+
+  <div class="rail-section">Overview</div>
+  <a href="#preamble">Preamble</a>
+  <a href="#system-map">System map</a>
+  <a href="#primitives">Shared primitives</a>
+
+  <div class="rail-section">Daybook</div>
+  <a href="#db-constants">Constants</a>
+  <a href="#db-schema" class="sub">→ Schema</a>
+  <a href="#db-entry" class="sub">→ Entry</a>
+  <a href="#db-matter" class="sub">→ Matter</a>
+  <a href="#db-logic">Logic</a>
+  <a href="#db-sm" class="sub">→ State machine</a>
+  <a href="#db-landing" class="sub">→ Landing rule</a>
+  <a href="#db-bloom" class="sub">→ Bloom rendering</a>
+
+  <div class="rail-section">Common Work</div>
+  <a href="#cw-constants">Constants</a>
+  <a href="#cw-schema" class="sub">→ Schema</a>
+  <a href="#cw-workitem" class="sub">→ WorkItem</a>
+  <a href="#cw-transition" class="sub">→ StageTransition</a>
+  <a href="#cw-logic">Logic</a>
+  <a href="#cw-sm" class="sub">→ State machine</a>
+  <a href="#cw-advance" class="sub">→ Advancement rules</a>
+
+  <div class="rail-section">Cross-system</div>
+  <a href="#bindings">Bindings</a>
+  <a href="#invariants">Invariants</a>
+  <a href="#open-questions">Open questions</a>
+</nav>
+
+<!-- Main -->
+<main class="main">
+
+<!-- Toggle -->
+<button class="mode-btn" onclick="document.documentElement.dataset.mode=document.documentElement.dataset.mode==='dark'?'light':'dark'">toggle light/dark</button>
+
+<!-- ──────────────────────────────────────────────────────── -->
+<!-- PREAMBLE -->
+<!-- ──────────────────────────────────────────────────────── -->
+<section class="section" id="preamble">
+  <div class="section-label">Overview · 00</div>
+  <h1>Technical Architecture</h1>
+  <p class="lead">Pre-implementation specification for the Daybook and Common Work systems. This document defines constants, data schema, state machines, business logic, and cross-system bindings. It is technology-agnostic — no database engine, API protocol, or language is assumed.</p>
+  <p>These two systems form the cooperative's accounting layer: Common Work tracks what the group is doing and how work flows; the Daybook records what individuals have done and observed. Together they produce the audit trail needed for patronage accounting under Subchapter K and RegenHub's member capital account rules.</p>
+
+  <div class="invariant">
+    <div class="inv-label">Human landing rule — applies to both systems</div>
+    <p>Agents prepare. People land. No entry moves from private to public, no matter closes, and no work item resolves without a named human performing that action. This constraint is architectural, not advisory.</p>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────── -->
+<!-- SYSTEM MAP -->
+<!-- ──────────────────────────────────────────────────────── -->
+<section class="section" id="system-map">
+  <div class="section-label">Overview · 01</div>
+  <h2>System map</h2>
+  <p>The Daybook records individual events. Common Work tracks collective work items. A <strong>Contribution</strong> entry links a person's action to a work item. A <strong>Clearing</strong> entry closes a matter or resolves a work item. The systems share no tables but reference each other by ID.</p>
+
+  <div class="binding-grid">
+    <div class="bind-system">
+      <h4>Daybook</h4>
+      <div class="bind-row"><span class="swatch" style="background:var(--kind-reflection)"></span> Entry (Reflection)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--kind-contribution)"></span> Entry (Contribution)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--kind-exchange)"></span> Entry (Exchange)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--kind-clearing)"></span> Entry (Clearing)</div>
+      <div class="bind-row" style="margin-top:.5rem; border-top:1px solid var(--line); padding-top:.4rem"><span class="swatch" style="background:var(--muted)"></span> Matter (open)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--head)"></span> Matter (landed)</div>
+    </div>
+    <div class="bind-arrows">
+      <div class="bind-link">Contribution.work_ref<br>→ WorkItem.id</div>
+      <div class="bind-link">Clearing.matter_ref<br>→ Matter.id</div>
+      <div class="bind-link">WorkItem.daybook_entries<br>→ Entry.id[]</div>
+    </div>
+    <div class="bind-system">
+      <h4>Common Work</h4>
+      <div class="bind-row"><span class="swatch" style="background:var(--stage-captured)"></span> WorkItem (captured)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--stage-offered)"></span> WorkItem (offered)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--stage-held)"></span> WorkItem (held)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--stage-standing)"></span> WorkItem (standing)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--stage-socialized)"></span> WorkItem (socialized)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--stage-resolved)"></span> WorkItem (resolved)</div>
+      <div class="bind-row"><span class="swatch" style="background:var(--stage-composted)"></span> WorkItem (composted)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────── -->
+<!-- SHARED PRIMITIVES -->
+<!-- ──────────────────────────────────────────────────────── -->
+<section class="section" id="primitives">
+  <div class="section-label">Overview · 02</div>
+  <h2>Shared primitives</h2>
+  <p>Both systems use these base types. Implementations may alias these to native types; the semantics are fixed.</p>
+<pre><span class="cmt">// Scalar types shared across both systems</span>
+<span class="kw">type</span> <span class="ty">UUID</span>      <span class="punc">=</span> <span class="str">string</span>  <span class="cmt">// RFC 4122 v4; canonical form with dashes</span>
+<span class="kw">type</span> <span class="ty">Timestamp</span> <span class="punc">=</span> <span class="str">string</span>  <span class="cmt">// ISO 8601 UTC, e.g. "2026-06-26T17:30:00Z"</span>
+<span class="kw">type</span> <span class="ty">MemberId</span>  <span class="punc">=</span> <span class="ty">UUID</span>    <span class="cmt">// references a registered cooperative member</span>
+<span class="kw">type</span> <span class="ty">EntryId</span>   <span class="punc">=</span> <span class="ty">UUID</span>    <span class="cmt">// primary key for a Daybook entry</span>
+<span class="kw">type</span> <span class="ty">MatterId</span>  <span class="punc">=</span> <span class="ty">UUID</span>    <span class="cmt">// primary key for an open Daybook matter</span>
+<span class="kw">type</span> <span class="ty">WorkId</span>    <span class="punc">=</span> <span class="ty">UUID</span>    <span class="cmt">// primary key for a Common Work item</span>
+
+<span class="cmt">// Ripe score: integer percentage, 0 = just opened, 100 = ready to land</span>
+<span class="kw">type</span> <span class="ty">RipeScore</span> <span class="punc">=</span> <span class="str">number</span>  <span class="cmt">// constrained to 0 ≤ n ≤ 100; integer only</span></pre>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Constraint</th><th>Rule</th></tr>
+      <tr><td>UUID generation</td><td>v4 random; never v1 time-based (leaks server MAC)</td></tr>
+      <tr><td>Timestamps</td><td>UTC always; local display is a presentation concern</td></tr>
+      <tr><td>MemberId scope</td><td>Must exist in the cooperative's member registry before use</td></tr>
+      <tr><td>Deleted records</td><td>Neither system uses hard deletes; see <code>composted</code> and <code>visibility</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- DAYBOOK -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<section class="section" id="db-constants">
+  <div class="section-label">Daybook · 10</div>
+  <h2>Constants</h2>
+
+  <h3>DaybookKind</h3>
+  <p>Four kinds. Three require membership. One is open to observers.</p>
+
+<pre><span class="kw">const</span> DAYBOOK_KINDS <span class="punc">= [</span>
+  <span class="str">'reflection'</span><span class="punc">,</span>    <span class="cmt">// witness and perception; open to observers</span>
+  <span class="str">'contribution'</span><span class="punc">,</span>  <span class="cmt">// labor, skill, resource given; members only</span>
+  <span class="str">'exchange'</span><span class="punc">,</span>      <span class="cmt">// goods or services traded; members only</span>
+  <span class="str">'clearing'</span><span class="punc">,</span>     <span class="cmt">// debt / credit resolved; members only</span>
+<span class="punc">]</span> <span class="kw">as const</span>
+
+<span class="kw">type</span> <span class="ty">DaybookKind</span> <span class="punc">=</span> <span class="kw">typeof</span> DAYBOOK_KINDS<span class="punc">[</span><span class="str">number</span><span class="punc">]</span></pre>
+
+  <div class="kind-grid">
+    <div class="kind-card">
+      <div class="kc-name" style="color:var(--kind-reflection)">Reflection</div>
+      <div class="kc-gate"><span class="pill pill-observer">observer</span><span class="pill pill-member">member</span></div>
+      <p>Witness and perception. What was noticed, felt, or understood. Not a claim on resources. Can be made private.</p>
+    </div>
+    <div class="kind-card">
+      <div class="kc-name" style="color:var(--kind-contribution)">Contribution</div>
+      <div class="kc-gate"><span class="pill pill-member">member only</span></div>
+      <p>Labor, skill, material, or resource given to the cooperative. The primary input for patronage accounting.</p>
+    </div>
+    <div class="kind-card">
+      <div class="kc-name" style="color:var(--kind-exchange)">Exchange</div>
+      <div class="kc-gate"><span class="pill pill-member">member only</span></div>
+      <p>A transfer of goods or services between members or between the cooperative and the outside world.</p>
+    </div>
+    <div class="kind-card">
+      <div class="kc-name" style="color:var(--kind-clearing)">Clearing</div>
+      <div class="kc-gate"><span class="pill pill-member">member only</span></div>
+      <p>Settlement of a debt, credit, or obligation. Closes open matters. May resolve work items in Common Work.</p>
+    </div>
+  </div>
+
+  <h3>Visibility states</h3>
+<pre><span class="kw">const</span> VISIBILITY_STATES <span class="punc">= [</span><span class="str">'private'</span><span class="punc">,</span> <span class="str">'public'</span><span class="punc">]</span> <span class="kw">as const</span>
+<span class="kw">type</span> <span class="ty">Visibility</span> <span class="punc">=</span> <span class="kw">typeof</span> VISIBILITY_STATES<span class="punc">[</span><span class="str">number</span><span class="punc">]</span>
+
+<span class="cmt">// Transition: private → public is one-way and requires a human action.
+// There is no mechanism to move a public entry back to private.
+// (Correction: a new Clearing entry supersedes; the original stays.)</span></pre>
+
+  <h3>Membership gate</h3>
+<pre><span class="kw">const</span> MEMBERSHIP_GATE<span class="punc">:</span> <span class="ty">Record</span><span class="punc">&lt;</span><span class="ty">DaybookKind</span><span class="punc">,</span> <span class="str">boolean</span><span class="punc">&gt; = {</span>
+  reflection<span class="punc">:</span>   <span class="num">false</span><span class="punc">,</span>  <span class="cmt">// observer may write</span>
+  contribution<span class="punc">:</span> <span class="num">true</span><span class="punc">,</span>   <span class="cmt">// member required</span>
+  exchange<span class="punc">:</span>     <span class="num">true</span><span class="punc">,</span>   <span class="cmt">// member required</span>
+  clearing<span class="punc">:</span>     <span class="num">true</span><span class="punc">,</span>   <span class="cmt">// member required</span>
+<span class="punc">}</span>
+
+<span class="cmt">// "Member" means: registered, dues current, no suspension.
+// "Observer" means: registered with name, not yet a member, or
+//   not logged in (read-only view of public entries only).</span></pre>
+
+  <h3>Ripe threshold</h3>
+<pre><span class="kw">const</span> RIPE_THRESHOLD <span class="punc">=</span> <span class="num">100</span>  <span class="cmt">// score at which a matter is ready to land</span>
+<span class="kw">const</span> RIPE_FLOOR     <span class="punc">=</span>   <span class="num">0</span>  <span class="cmt">// minimum; newly opened matters start here</span>
+
+<span class="cmt">// Ripe score is an integer. Non-integer inputs must be floored.
+// Score may not decrease once set (matters do not un-ripen).
+// Score reaching RIPE_THRESHOLD does not auto-land the matter —
+//   it only signals readiness. A human must still act.</span></pre>
+</section>
+
+<!-- ──────────────────────────────────────────────────────── -->
+<!-- DAYBOOK SCHEMA -->
+<!-- ──────────────────────────────────────────────────────── -->
+<section class="section" id="db-schema">
+  <div class="section-label">Daybook · 11</div>
+  <h2>Schema</h2>
+
+  <h3 id="db-entry">Entry</h3>
+  <p>The atomic unit of the Daybook. Every recorded event is an entry.</p>
+
+<pre><span class="kw">interface</span> <span class="ty">Entry</span> <span class="punc">{</span>
+  <span class="key">id</span><span class="punc">:</span>            <span class="ty">EntryId</span>                <span class="cmt">// required; system-generated on create</span>
+  <span class="key">kind</span><span class="punc">:</span>          <span class="ty">DaybookKind</span>            <span class="cmt">// required; immutable after creation</span>
+  <span class="key">author</span><span class="punc">:</span>        <span class="ty">MemberId</span>               <span class="cmt">// required; who wrote this</span>
+  <span class="key">created_at</span><span class="punc">:</span>    <span class="ty">Timestamp</span>              <span class="cmt">// required; system-set on create</span>
+  <span class="key">body</span><span class="punc">:</span>          <span class="str">string</span>                 <span class="cmt">// required; the content of the entry</span>
+  <span class="key">visibility</span><span class="punc">:</span>    <span class="ty">Visibility</span>             <span class="cmt">// required; starts 'private', may go 'public'</span>
+  <span class="key">published_at</span><span class="punc">:</span>  <span class="ty">Timestamp</span> <span class="punc">| null</span>       <span class="cmt">// set when visibility flips to 'public'</span>
+  <span class="key">published_by</span><span class="punc">:</span>  <span class="ty">MemberId</span>  <span class="punc">| null</span>       <span class="cmt">// must equal author (self-publish only)</span>
+  <span class="key">matter_ref</span><span class="punc">:</span>    <span class="ty">MatterId</span>  <span class="punc">| null</span>       <span class="cmt">// if this entry addresses an open matter</span>
+  <span class="key">work_ref</span><span class="punc">:</span>      <span class="ty">WorkId</span>    <span class="punc">| null</span>       <span class="cmt">// contribution entries should reference work</span>
+  <span class="key">supersedes</span><span class="punc">:</span>    <span class="ty">EntryId</span>   <span class="punc">| null</span>       <span class="cmt">// if correcting a prior entry</span>
+<span class="punc">}</span></pre>
+
+  <div class="tbl-wrap">
+    <table class="field-table">
+      <tr><th>Field</th><th>Type</th><th>Constraint</th></tr>
+      <tr><td>id</td><td>EntryId</td><td>System-generated; never supplied by client</td></tr>
+      <tr><td>kind</td><td>DaybookKind</td><td>Immutable after creation; check <code>MEMBERSHIP_GATE</code> on write</td></tr>
+      <tr><td>author</td><td>MemberId</td><td>Must exist in member registry; must satisfy <code>MEMBERSHIP_GATE[kind]</code></td></tr>
+      <tr><td>body</td><td>string</td><td>Min 1 char; no max defined (practical limit TBD)</td></tr>
+      <tr><td>visibility</td><td>Visibility</td><td>Starts <code>'private'</code>; transition to <code>'public'</code> is one-way</td></tr>
+      <tr><td>published_by</td><td>MemberId | null</td><td>Must equal <code>author</code>; agents may not publish on behalf</td></tr>
+      <tr><td>matter_ref</td><td>MatterId | null</td><td>If set, must reference an existing, unlanded matter</td></tr>
+      <tr><td>work_ref</td><td>WorkId | null</td><td>If kind is <code>'contribution'</code>, strongly recommended</td></tr>
+      <tr><td>supersedes</td><td>EntryId | null</td><td>If set, prior entry is marked superseded but remains in log</td></tr>
+    </table>
+  </div>
+
+  <h3 id="db-matter">Matter</h3>
+  <p>An open question that must be decided by a named person. Matters exist in the Daybook's second layer — visible as outline petals in the bloom until landed.</p>
+
+<pre><span class="kw">interface</span> <span class="ty">Matter</span> <span class="punc">{</span>
+  <span class="key">id</span><span class="punc">:</span>              <span class="ty">MatterId</span>             <span class="cmt">// required; system-generated</span>
+  <span class="key">kind</span><span class="punc">:</span>            <span class="ty">DaybookKind</span>          <span class="cmt">// required; sets bloom petal color</span>
+  <span class="key">heading</span><span class="punc">:</span>         <span class="str">string</span>               <span class="cmt">// required; the open question</span>
+  <span class="key">ripe</span><span class="punc">:</span>            <span class="ty">RipeScore</span>            <span class="cmt">// required; starts 0, rises toward 100</span>
+  <span class="key">awaits</span><span class="punc">:</span>          <span class="str">string</span>               <span class="cmt">// required; the decision or action needed</span>
+  <span class="key">face</span><span class="punc">:</span>            <span class="str">string</span>               <span class="cmt">// required; name of person who must land</span>
+  <span class="key">face_member_id</span><span class="punc">:</span>  <span class="ty">MemberId</span>             <span class="cmt">// required; machine-readable identity of face</span>
+  <span class="key">cite</span><span class="punc">:</span>            <span class="str">string</span>               <span class="cmt">// optional; bylaw / PRD / agreement reference</span>
+  <span class="key">act</span><span class="punc">:</span>             <span class="str">string</span>               <span class="cmt">// required; describes the landing action</span>
+  <span class="key">opened_at</span><span class="punc">:</span>       <span class="ty">Timestamp</span>            <span class="cmt">// required; system-set</span>
+  <span class="key">opened_by</span><span class="punc">:</span>       <span class="ty">MemberId</span>             <span class="cmt">// required; who raised this matter</span>
+  <span class="key">landed_at</span><span class="punc">:</span>       <span class="ty">Timestamp</span> <span class="punc">| null</span>     <span class="cmt">// set when landed</span>
+  <span class="key">landed_by</span><span class="punc">:</span>       <span class="ty">MemberId</span>  <span class="punc">| null</span>     <span class="cmt">// must equal face_member_id</span>
+  <span class="key">landing_entry</span><span class="punc">:</span>   <span class="ty">EntryId</span>   <span class="punc">| null</span>     <span class="cmt">// the Clearing entry that closed it</span>
+<span class="punc">}</span></pre>
+
+  <div class="tbl-wrap">
+    <table class="field-table">
+      <tr><th>Field</th><th>Type</th><th>Constraint</th></tr>
+      <tr><td>heading</td><td>string</td><td>Should be phrased as a question or open statement</td></tr>
+      <tr><td>ripe</td><td>RipeScore</td><td>Integer 0–100; may only increase; never decreases</td></tr>
+      <tr><td>face</td><td>string</td><td>Human-readable name; display label for <code>face_member_id</code></td></tr>
+      <tr><td>face_member_id</td><td>MemberId</td><td>Must match an active member; checked at landing</td></tr>
+      <tr><td>landed_by</td><td>MemberId | null</td><td>Must equal <code>face_member_id</code>; agents may not land matters</td></tr>
+      <tr><td>landing_entry</td><td>EntryId | null</td><td>Must be a Clearing entry by the same author as <code>landed_by</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────── -->
+<!-- DAYBOOK LOGIC -->
+<!-- ──────────────────────────────────────────────────────── -->
+<section class="section" id="db-logic">
+  <div class="section-label">Daybook · 12</div>
+  <h2>Logic</h2>
+
+  <h3 id="db-sm">Entry state machine</h3>
+
+  <div class="sm-wrap">
+    <div class="sm-row">
+      <div class="sm-label">Visibility</div>
+      <div class="sm-flow">
+        <div class="sm-node" style="background:var(--bg4); color:var(--dim); border:1px solid var(--line)">private</div>
+        <div class="sm-arrow">──── author publishes ────›</div>
+        <div class="sm-node" style="background:var(--blue)">public</div>
+        <div class="sm-arrow" style="color:var(--coral)">✕ no return</div>
+      </div>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">Matter</div>
+      <div class="sm-flow">
+        <div class="sm-node" style="background:var(--bg4); color:var(--dim); border:1px solid var(--line)">open</div>
+        <div class="sm-arrow">──── face_member lands ────›</div>
+        <div class="sm-node" style="background:var(--kind-clearing)">landed</div>
+        <div class="sm-arrow" style="color:var(--coral)">✕ immutable</div>
+      </div>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">Entry body</div>
+      <div class="sm-flow">
+        <div class="sm-node" style="background:var(--bg4); color:var(--dim); border:1px solid var(--line)">draft</div>
+        <div class="sm-arrow">──────────────────────────›</div>
+        <div class="sm-node" style="background:var(--bg4); color:var(--dim); border:1px solid var(--line)">saved</div>
+        <div class="sm-arrow" style="color:var(--coral)">✕ body is immutable</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 id="db-landing">Landing rule</h3>
+
+  <div class="invariant">
+    <div class="inv-label">Invariant DB-L1 — The landing rule</div>
+    <p>A matter lands if and only if: (1) the requesting actor's <code>MemberId</code> equals the matter's <code>face_member_id</code>, and (2) the actor is a human operating the system directly (not an agent acting on their behalf), and (3) a valid Clearing entry is submitted simultaneously by the same actor.</p>
+  </div>
+
+  <div class="rule-block">
+    <strong>canLand(matter, actor, entry):</strong><br>
+    actor.id === matter.face_member_id<br>
+    AND actor.type === 'human'<br>
+    AND entry.kind === 'clearing'<br>
+    AND entry.author === actor.id<br>
+    AND entry.visibility === 'public'  <span class="cmt">// clearing entries must be public</span><br>
+    AND matter.landed_at === null      <span class="cmt">// already landed matters cannot be re-landed</span>
+  </div>
+
+  <div class="rule-block">
+    <strong>canPublish(entry, actor):</strong><br>
+    actor.id === entry.author<br>
+    AND actor.type === 'human'<br>
+    AND entry.visibility === 'private'  <span class="cmt">// already-public entries: no-op</span>
+  </div>
+
+  <h3>Ripening</h3>
+  <p>Ripe score expresses how close a matter is to being ready to land. The mechanism for advancing it is deliberately left open — different matters may ripen by different signals (votes, time elapsed, entries added). What is fixed:</p>
+
+  <div class="rule-block">
+    <strong>setRipe(matter, newScore):</strong><br>
+    newScore === Math.floor(newScore)       <span class="cmt">// integers only</span><br>
+    AND newScore &gt;= matter.ripe             <span class="cmt">// score may not decrease</span><br>
+    AND newScore &gt;= RIPE_FLOOR             <span class="cmt">// 0</span><br>
+    AND newScore &lt;= RIPE_THRESHOLD         <span class="cmt">// 100</span><br>
+    AND matter.landed_at === null           <span class="cmt">// landed matters are frozen</span>
+  </div>
+
+  <div class="invariant">
+    <div class="inv-label">Invariant DB-L2 — Ripe does not auto-land</div>
+    <p>A matter reaching <code>ripe === 100</code> does not automatically land. It becomes <em>landable</em>. The landing action remains a human decision.</p>
+  </div>
+
+  <h3 id="db-bloom">Bloom rendering constants</h3>
+  <p>The bloom is a clock-face SVG with one petal per entry kind per time segment. Solid petals are public entries. Outline petals with a fill bar are open matters (fill % = ripe score). These are presentation constants only.</p>
+
+<pre><span class="kw">const</span> BLOOM_PETALS    <span class="punc">=</span> <span class="num">12</span>      <span class="cmt">// clock positions, one per hour segment</span>
+<span class="kw">const</span> PETAL_RADIUS    <span class="punc">=</span> <span class="num">80</span>      <span class="cmt">// SVG units from center to petal tip</span>
+<span class="kw">const</span> PETAL_OPEN_PCT  <span class="punc">=</span> <span class="num">35</span>      <span class="cmt">// % of PETAL_RADIUS for open-matter fill base</span>
+<span class="kw">const</span> PETAL_COLORS<span class="punc">:</span> <span class="ty">Record</span><span class="punc">&lt;</span><span class="ty">DaybookKind</span><span class="punc">,</span> <span class="str">string</span><span class="punc">&gt; = {</span>
+  reflection<span class="punc">:</span>   <span class="str">'#2563eb'</span><span class="punc">,</span>  <span class="cmt">// blue</span>
+  contribution<span class="punc">:</span> <span class="str">'#d97706'</span><span class="punc">,</span>  <span class="cmt">// gold</span>
+  exchange<span class="punc">:</span>     <span class="str">'#9333ea'</span><span class="punc">,</span>  <span class="cmt">// violet</span>
+  clearing<span class="punc">:</span>     <span class="str">'#16a34a'</span><span class="punc">,</span>  <span class="cmt">// green</span>
+<span class="punc">}</span>
+
+<span class="cmt">// Solid petal: fully colored, opacity 0.85, stroke none
+// Open-matter petal: stroke only (1.5px), fill = color at (ripe/100)*opacity
+// Current-time marker: thin radial line at clock position for current hour</span></pre>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- COMMON WORK -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<section class="section" id="cw-constants">
+  <div class="section-label">Common Work · 20</div>
+  <h2>Constants</h2>
+
+  <h3>Stages</h3>
+<pre><span class="kw">const</span> STAGES <span class="punc">= [</span>
+  <span class="str">'captured'</span><span class="punc">,</span>    <span class="cmt">// noticed; not yet offered to the group</span>
+  <span class="str">'offered'</span><span class="punc">,</span>     <span class="cmt">// proposed for collective attention</span>
+  <span class="str">'held'</span><span class="punc">,</span>        <span class="cmt">// assigned; someone is working it</span>
+  <span class="str">'standing'</span><span class="punc">,</span>    <span class="cmt">// work done; standing for review</span>
+  <span class="str">'socialized'</span><span class="punc">,</span>  <span class="cmt">// reviewed and acknowledged by at least one other</span>
+  <span class="str">'resolved'</span><span class="punc">,</span>    <span class="cmt">// formally complete; human landing required</span>
+  <span class="str">'composted'</span><span class="punc">,</span>   <span class="cmt">// intentionally retired without resolution</span>
+<span class="punc">]</span> <span class="kw">as const</span>
+
+<span class="kw">type</span> <span class="ty">Stage</span> <span class="punc">=</span> <span class="kw">typeof</span> STAGES<span class="punc">[</span><span class="str">number</span><span class="punc">]</span></pre>
+
+  <div class="stage-strip">
+    <div class="stage-cell sc-captured">captured<small>noticed</small></div>
+    <div class="stage-cell sc-offered">offered<small>proposed</small></div>
+    <div class="stage-cell sc-held">held<small>in work</small></div>
+    <div class="stage-cell sc-standing">standing<small>for review</small></div>
+    <div class="stage-cell sc-socialized">socialized<small>acknowledged</small></div>
+    <div class="stage-cell sc-resolved">resolved<small>complete</small></div>
+    <div class="stage-cell sc-composted">composted<small>retired</small></div>
+  </div>
+
+  <h3>Stage colors</h3>
+<pre><span class="kw">const</span> STAGE_COLORS<span class="punc">:</span> <span class="ty">Record</span><span class="punc">&lt;</span><span class="ty">Stage</span><span class="punc">,</span> <span class="str">string</span><span class="punc">&gt; = {</span>
+  captured<span class="punc">:   </span><span class="str">'#b45309'</span><span class="punc">,</span>  <span class="cmt">// amber-700</span>
+  offered<span class="punc">:    </span><span class="str">'#d97706'</span><span class="punc">,</span>  <span class="cmt">// amber-500</span>
+  held<span class="punc">:       </span><span class="str">'#ea580c'</span><span class="punc">,</span>  <span class="cmt">// orange-600</span>
+  standing<span class="punc">:   </span><span class="str">'#dc2626'</span><span class="punc">,</span>  <span class="cmt">// red-600</span>
+  socialized<span class="punc">: </span><span class="str">'#9333ea'</span><span class="punc">,</span>  <span class="cmt">// violet-600</span>
+  resolved<span class="punc">:   </span><span class="str">'#2563eb'</span><span class="punc">,</span>  <span class="cmt">// blue-600</span>
+  composted<span class="punc">:  </span><span class="str">'#52525b'</span><span class="punc">,</span>  <span class="cmt">// zinc-600</span>
+<span class="punc">}</span></pre>
+
+  <h3>WorkKind</h3>
+<pre><span class="kw">const</span> WORK_KINDS <span class="punc">= [</span>
+  <span class="str">'task'</span><span class="punc">,</span>       <span class="cmt">// discrete action to be done</span>
+  <span class="str">'decision'</span><span class="punc">,</span>  <span class="cmt">// something the collective must decide</span>
+  <span class="str">'question'</span><span class="punc">,</span>  <span class="cmt">// inquiry that needs resolution</span>
+  <span class="str">'project'</span><span class="punc">,</span>   <span class="cmt">// multi-step container; may have child tasks</span>
+<span class="punc">]</span> <span class="kw">as const</span>
+
+<span class="kw">type</span> <span class="ty">WorkKind</span> <span class="punc">=</span> <span class="kw">typeof</span> WORK_KINDS<span class="punc">[</span><span class="str">number</span><span class="punc">]</span></pre>
+</section>
+
+<!-- ──────────────────────────────────────────────────────── -->
+<!-- COMMON WORK SCHEMA -->
+<!-- ──────────────────────────────────────────────────────── -->
+<section class="section" id="cw-schema">
+  <div class="section-label">Common Work · 21</div>
+  <h2>Schema</h2>
+
+  <h3 id="cw-workitem">WorkItem</h3>
+<pre><span class="kw">interface</span> <span class="ty">WorkItem</span> <span class="punc">{</span>
+  <span class="key">id</span><span class="punc">:</span>               <span class="ty">WorkId</span>                <span class="cmt">// required; system-generated</span>
+  <span class="key">title</span><span class="punc">:</span>            <span class="str">string</span>                <span class="cmt">// required; short human-readable name</span>
+  <span class="key">description</span><span class="punc">:</span>      <span class="str">string</span>                <span class="cmt">// required; full description of the work</span>
+  <span class="key">kind</span><span class="punc">:</span>             <span class="ty">WorkKind</span>              <span class="cmt">// required; immutable after creation</span>
+  <span class="key">stage</span><span class="punc">:</span>            <span class="ty">Stage</span>                 <span class="cmt">// required; current stage</span>
+  <span class="key">created_by</span><span class="punc">:</span>       <span class="ty">MemberId</span>              <span class="cmt">// required; original author</span>
+  <span class="key">created_at</span><span class="punc">:</span>       <span class="ty">Timestamp</span>             <span class="cmt">// required; system-set</span>
+  <span class="key">assignee</span><span class="punc">:</span>         <span class="ty">MemberId</span>  <span class="punc">| null</span>      <span class="cmt">// set when stage reaches 'held'</span>
+  <span class="key">parent_id</span><span class="punc">:</span>        <span class="ty">WorkId</span>    <span class="punc">| null</span>      <span class="cmt">// for child tasks within a project</span>
+  <span class="key">transitions</span><span class="punc">:</span>      <span class="ty">StageTransition</span><span class="punc">[]</span>     <span class="cmt">// full stage history; append-only</span>
+  <span class="key">daybook_entries</span><span class="punc">:</span>  <span class="ty">EntryId</span><span class="punc">[]</span>             <span class="cmt">// linked Daybook entries; audit trail</span>
+  <span class="key">resolved_at</span><span class="punc">:</span>      <span class="ty">Timestamp</span> <span class="punc">| null</span>      <span class="cmt">// set when stage reaches 'resolved'</span>
+  <span class="key">resolved_by</span><span class="punc">:</span>      <span class="ty">MemberId</span>  <span class="punc">| null</span>      <span class="cmt">// the human who landed it</span>
+  <span class="key">composted_at</span><span class="punc">:</span>     <span class="ty">Timestamp</span> <span class="punc">| null</span>      <span class="cmt">// set if composted instead of resolved</span>
+  <span class="key">composted_by</span><span class="punc">:</span>     <span class="ty">MemberId</span>  <span class="punc">| null</span>      <span class="cmt">// coordinator who retired it</span>
+  <span class="key">compost_reason</span><span class="punc">:</span>   <span class="str">string</span>    <span class="punc">| null</span>      <span class="cmt">// required when composted</span>
+<span class="punc">}</span></pre>
+
+  <h3 id="cw-transition">StageTransition</h3>
+<pre><span class="kw">interface</span> <span class="ty">StageTransition</span> <span class="punc">{</span>
+  <span class="key">id</span><span class="punc">:</span>          <span class="ty">UUID</span>                  <span class="cmt">// required; system-generated</span>
+  <span class="key">work_id</span><span class="punc">:</span>     <span class="ty">WorkId</span>                <span class="cmt">// required; parent item</span>
+  <span class="key">from</span><span class="punc">:</span>        <span class="ty">Stage</span> <span class="punc">| null</span>          <span class="cmt">// null for initial capture (no prior stage)</span>
+  <span class="key">to</span><span class="punc">:</span>          <span class="ty">Stage</span>                 <span class="cmt">// required; target stage</span>
+  <span class="key">by</span><span class="punc">:</span>          <span class="ty">MemberId</span>              <span class="cmt">// required; who made this move</span>
+  <span class="key">at</span><span class="punc">:</span>          <span class="ty">Timestamp</span>             <span class="cmt">// required; system-set</span>
+  <span class="key">rationale</span><span class="punc">:</span>   <span class="str">string</span> <span class="punc">| null</span>         <span class="cmt">// optional; required for compost transitions</span>
+  <span class="key">entry_ref</span><span class="punc">:</span>   <span class="ty">EntryId</span> <span class="punc">| null</span>        <span class="cmt">// Daybook entry accompanying this move</span>
+<span class="punc">}</span></pre>
+
+  <div class="tbl-wrap">
+    <table class="field-table">
+      <tr><th>Field</th><th>Constraint</th></tr>
+      <tr><td>from</td><td>Must match <code>WorkItem.stage</code> at time of transition; null only for initial capture</td></tr>
+      <tr><td>to</td><td>Must be a valid next stage per the advancement rules below</td></tr>
+      <tr><td>by</td><td>Must satisfy the actor rule for this transition (see advancement rules)</td></tr>
+      <tr><td>rationale</td><td>Required when <code>to === 'composted'</code></td></tr>
+      <tr><td>entry_ref</td><td>If set, the Daybook entry must reference this <code>work_id</code></td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ──────────────────────────────────────────────────────── -->
+<!-- COMMON WORK LOGIC -->
+<!-- ──────────────────────────────────────────────────────── -->
+<section class="section" id="cw-logic">
+  <div class="section-label">Common Work · 22</div>
+  <h2>Logic</h2>
+
+  <h3 id="cw-sm">Stage state machine</h3>
+
+  <div class="sm-wrap">
+    <div class="sm-row">
+      <div class="sm-label">Primary arc</div>
+      <div class="sm-flow">
+        <div class="sm-node" style="background:var(--stage-captured)">captured</div>
+        <div class="sm-arrow">›</div>
+        <div class="sm-node" style="background:var(--stage-offered)">offered</div>
+        <div class="sm-arrow">›</div>
+        <div class="sm-node" style="background:var(--stage-held)">held</div>
+        <div class="sm-arrow">›</div>
+        <div class="sm-node" style="background:var(--stage-standing)">standing</div>
+        <div class="sm-arrow">›</div>
+        <div class="sm-node" style="background:var(--stage-socialized)">socialized</div>
+        <div class="sm-arrow">›</div>
+        <div class="sm-node" style="background:var(--stage-resolved)">resolved</div>
+      </div>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">Exit arc</div>
+      <div class="sm-flow">
+        <div class="sm-node" style="background:var(--bg4); color:var(--dim); border:1px solid var(--line)">any stage</div>
+        <div class="sm-arrow">──── coordinator ────›</div>
+        <div class="sm-node" style="background:var(--stage-composted)">composted</div>
+        <div class="sm-arrow" style="color:var(--coral)">✕ terminal</div>
+      </div>
+    </div>
+    <div class="sm-row">
+      <div class="sm-label">Return arc</div>
+      <div class="sm-flow">
+        <div class="sm-node" style="background:var(--stage-standing)">standing</div>
+        <div class="sm-arrow">──── blocked ────›</div>
+        <div class="sm-node" style="background:var(--stage-held)">held</div>
+        <div class="sm-node" style="background:var(--bg4); color:var(--dim); border:1px solid var(--line); font-size:.65rem; padding:.3rem .6rem">(only allowed return)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="invariant">
+    <div class="inv-label">Invariant CW-L1 — Terminal stages</div>
+    <p><code>resolved</code> and <code>composted</code> are terminal. A work item in either stage accepts no further transitions. Any attempt to advance or return a terminal item must be rejected.</p>
+  </div>
+
+  <h3 id="cw-advance">Advancement rules</h3>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Transition</th><th>Who may act</th><th>Condition</th></tr>
+      <tr>
+        <td><code>null → captured</code></td>
+        <td>Any member</td>
+        <td>Initial creation; no prior stage</td>
+      </tr>
+      <tr>
+        <td><code>captured → offered</code></td>
+        <td>Author or any member</td>
+        <td>Work is ready for collective attention</td>
+      </tr>
+      <tr>
+        <td><code>offered → held</code></td>
+        <td>Assignee (self-claim) or coordinator</td>
+        <td>Someone takes responsibility; <code>assignee</code> must be set</td>
+      </tr>
+      <tr>
+        <td><code>held → standing</code></td>
+        <td>Assignee only</td>
+        <td>Assignee signals work is done and ready for review</td>
+      </tr>
+      <tr>
+        <td><code>standing → held</code></td>
+        <td>Assignee or coordinator</td>
+        <td>Review found blocking issues; item returns to work</td>
+      </tr>
+      <tr>
+        <td><code>standing → socialized</code></td>
+        <td>Any member except assignee</td>
+        <td>At least one other member reviews and acknowledges</td>
+      </tr>
+      <tr>
+        <td><code>socialized → resolved</code></td>
+        <td>Named human (coordinator or designated face)</td>
+        <td>Human landing required; should accompany a Clearing entry</td>
+      </tr>
+      <tr>
+        <td><code>any → composted</code></td>
+        <td>Coordinator</td>
+        <td><code>rationale</code> required; no Daybook entry required but recommended</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="rule-block">
+    <strong>canAdvance(item, actor, to):</strong><br>
+    to !== item.stage                    <span class="cmt">// must actually change</span><br>
+    AND NOT isTerminal(item.stage)       <span class="cmt">// terminal stages are frozen</span><br>
+    AND isValidTransition(item.stage, to)<span class="cmt">// must follow the allowed graph</span><br>
+    AND actorSatisfiesRule(item, actor, to) <span class="cmt">// actor has permission for this move</span>
+  </div>
+
+  <div class="rule-block">
+    <strong>isTerminal(stage):</strong><br>
+    stage === 'resolved' OR stage === 'composted'
+  </div>
+
+  <div class="rule-block">
+    <strong>isValidTransition(from, to):</strong><br>
+    ALLOWED_TRANSITIONS[from].includes(to)
+  </div>
+
+<pre><span class="kw">const</span> ALLOWED_TRANSITIONS<span class="punc">:</span> <span class="ty">Record</span><span class="punc">&lt;</span><span class="ty">Stage</span><span class="punc">,</span> <span class="ty">Stage</span><span class="punc">[]&gt; = {</span>
+  captured<span class="punc">:   [</span><span class="str">'offered'</span><span class="punc">,</span>    <span class="str">'composted'</span><span class="punc">],</span>
+  offered<span class="punc">:    [</span><span class="str">'held'</span><span class="punc">,</span>       <span class="str">'composted'</span><span class="punc">],</span>
+  held<span class="punc">:       [</span><span class="str">'standing'</span><span class="punc">,</span>   <span class="str">'composted'</span><span class="punc">],</span>
+  standing<span class="punc">:   [</span><span class="str">'held'</span><span class="punc">,</span>       <span class="str">'socialized'</span><span class="punc">,</span> <span class="str">'composted'</span><span class="punc">],</span>
+  socialized<span class="punc">: [</span><span class="str">'resolved'</span><span class="punc">,</span>   <span class="str">'composted'</span><span class="punc">],</span>
+  resolved<span class="punc">:   [],</span>  <span class="cmt">// terminal</span>
+  composted<span class="punc">:  [],</span>  <span class="cmt">// terminal</span>
+<span class="punc">}</span></pre>
+
+  <h3>Coordinator role</h3>
+  <p>Certain transitions require a "coordinator." The coordinator role is not modeled as a static attribute — it is a capability check at transition time. Its definition is an open question (see below), but the required interface is:</p>
+
+<pre><span class="kw">interface</span> <span class="ty">CoordinatorCheck</span> <span class="punc">{</span>
+  isCoordinator<span class="punc">(</span>member<span class="punc">:</span> <span class="ty">MemberId</span><span class="punc">,</span> context<span class="punc">:</span> <span class="ty">WorkItem</span><span class="punc">):</span> <span class="str">boolean</span>
+<span class="punc">}</span>
+
+<span class="cmt">// Implementations may define coordinator as: board role, sprint steward,
+// designated work-item owner, or by bylaw resolution. Not specified here.</span></pre>
+</section>
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- CROSS-SYSTEM BINDINGS -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<section class="section" id="bindings">
+  <div class="section-label">Cross-system · 30</div>
+  <h2>Bindings</h2>
+  <p>The systems reference each other by ID. There is no foreign key enforcement at the data layer — binding integrity is a business logic concern.</p>
+
+  <h3>Contribution → WorkItem</h3>
+  <div class="rule-block">
+    When a member makes a Contribution Daybook entry, <code>entry.work_ref</code> SHOULD be set to the <code>WorkId</code> of the item being contributed to. The corresponding <code>WorkItem.daybook_entries</code> array SHOULD include this <code>EntryId</code>. Both sides of this reference must be kept consistent.
+  </div>
+
+  <h3>Clearing entry → Matter landing</h3>
+  <div class="rule-block">
+    To land a matter, the actor submits a Clearing entry with <code>entry.matter_ref</code> pointing to the matter. The landing action sets <code>matter.landed_at</code>, <code>matter.landed_by</code>, and <code>matter.landing_entry</code> atomically with the entry's <code>visibility</code> being set to <code>'public'</code>. These three mutations must be a single atomic operation.
+  </div>
+
+  <h3>Clearing entry → WorkItem resolution</h3>
+  <div class="rule-block">
+    To resolve a work item, the actor submits a Clearing entry with <code>entry.work_ref</code> pointing to the work item. The item's stage transitions to <code>'resolved'</code>, <code>resolved_at</code> and <code>resolved_by</code> are set, and the entry is appended to <code>daybook_entries</code>. These mutations must be atomic.
+  </div>
+
+  <h3>Binding invariants</h3>
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>Reference</th><th>Integrity rule</th></tr>
+      <tr>
+        <td><code>Entry.work_ref</code></td>
+        <td>If set, must reference an existing, non-composted WorkItem</td>
+      </tr>
+      <tr>
+        <td><code>Entry.matter_ref</code></td>
+        <td>If set, must reference an existing, unlanded Matter</td>
+      </tr>
+      <tr>
+        <td><code>WorkItem.daybook_entries</code></td>
+        <td>All IDs must reference existing, public Entries that reference this WorkId</td>
+      </tr>
+      <tr>
+        <td><code>Matter.landing_entry</code></td>
+        <td>Must reference a public Clearing entry authored by <code>landed_by</code></td>
+      </tr>
+      <tr>
+        <td><code>StageTransition.entry_ref</code></td>
+        <td>If set, must reference an entry with <code>work_ref === work_id</code></td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- INVARIANTS -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<section class="section" id="invariants">
+  <div class="section-label">Cross-system · 31</div>
+  <h2>Invariants</h2>
+  <p>These must hold at all times across both systems. An implementation that violates any of these is incorrect.</p>
+
+  <div class="invariant">
+    <div class="inv-label">INV-01 — Human landing</div>
+    <p>No Entry may transition from <code>private</code> to <code>public</code> without a human actor. No Matter may land without a human actor. No WorkItem may reach <code>resolved</code> without a human actor. Agent-initiated calls to any of these transitions must be rejected.</p>
+  </div>
+
+  <div class="invariant">
+    <div class="inv-label">INV-02 — Immutability of settled records</div>
+    <p>A public Entry's <code>body</code>, <code>kind</code>, and <code>author</code> are immutable. A landed Matter's <code>landed_at</code>, <code>landed_by</code>, and <code>landing_entry</code> are immutable. A terminal WorkItem accepts no further transitions. Corrections are made by new entries with <code>supersedes</code> references.</p>
+  </div>
+
+  <div class="invariant">
+    <div class="inv-label">INV-03 — Membership gate enforcement</div>
+    <p>An Entry of kind <code>contribution</code>, <code>exchange</code>, or <code>clearing</code> may only be authored by an active cooperative member. This check must occur at write time. A member who loses good standing after writing an entry does not retroactively invalidate that entry.</p>
+  </div>
+
+  <div class="invariant">
+    <div class="inv-label">INV-04 — Ripe monotonicity</div>
+    <p>A Matter's <code>ripe</code> score may only increase. Any attempted decrease must be rejected. The score is frozen once the matter is landed.</p>
+  </div>
+
+  <div class="invariant">
+    <div class="inv-label">INV-05 — Transition log completeness</div>
+    <p>Every stage a WorkItem has occupied must be represented in its <code>transitions</code> array. The current <code>stage</code> must always equal the <code>to</code> field of the most recent StageTransition. There must be no gaps or unexplained jumps in the transition history.</p>
+  </div>
+
+  <div class="invariant">
+    <div class="inv-label">INV-06 — Atomic cross-system mutations</div>
+    <p>When a Clearing entry both publishes an entry and lands a matter (or resolves a work item), both mutations must succeed or both must fail. Partial application is not permitted.</p>
+  </div>
+
+  <div class="invariant">
+    <div class="inv-label">INV-07 — Socialization threshold</div>
+    <p>A WorkItem may only advance from <code>standing</code> to <code>socialized</code> if the actor is a member other than the current assignee. Self-socialization is not permitted.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════ -->
+<!-- OPEN QUESTIONS -->
+<!-- ══════════════════════════════════════════════════════════ -->
+
+<section class="section" id="open-questions">
+  <div class="section-label">Cross-system · 32</div>
+  <h2>Open questions</h2>
+  <p>These are architectural decisions deferred to implementation or board resolution. They are flagged here so they are not accidentally assumed.</p>
+
+  <div class="tbl-wrap">
+    <table>
+      <tr><th>#</th><th>Question</th><th>Impact</th></tr>
+      <tr>
+        <td>Q1</td>
+        <td>What defines the coordinator role? Board appointment, bylaw section, or runtime assignment per work item?</td>
+        <td>Blocks implementation of <code>isCoordinator()</code></td>
+      </tr>
+      <tr>
+        <td>Q2</td>
+        <td>What is the mechanism for ripening a matter? Who may call <code>setRipe()</code>? Is it member vote, elapsed time, or agent-assessed signal?</td>
+        <td>Blocks Matter lifecycle implementation</td>
+      </tr>
+      <tr>
+        <td>Q3</td>
+        <td>May a Daybook entry reference both a <code>matter_ref</code> and a <code>work_ref</code> simultaneously?</td>
+        <td>Affects Entry validation rules</td>
+      </tr>
+      <tr>
+        <td>Q4</td>
+        <td>What is the patronage accounting formula? How are Contribution entries aggregated into member capital account credits?</td>
+        <td>Blocks patronage reporting</td>
+      </tr>
+      <tr>
+        <td>Q5</td>
+        <td>Can a WorkItem have child items (project → tasks)? If so, does a project resolve when all children resolve, or does it require its own explicit resolution?</td>
+        <td>Affects parent_id semantics</td>
+      </tr>
+      <tr>
+        <td>Q6</td>
+        <td>What constitutes "agent type === human" in the system? OAuth session, hardware token, signature, or something else?</td>
+        <td>Critical path for INV-01 enforcement</td>
+      </tr>
+      <tr>
+        <td>Q7</td>
+        <td>May a private Reflection be permanently deleted by its author, or is it retained but hidden?</td>
+        <td>Affects member data rights and audit trail</td>
+      </tr>
+    </table>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-label">Meta</div>
+  <p style="font-family:var(--mono); font-size:.7rem; color:var(--muted)">
+    Techne Studio · RegenHub, LCA · Boulder, Colorado<br>
+    Pre-implementation architecture · Last revised 2026-06-26<br>
+    Not a legal document. Schema and logic subject to board resolution before implementation.
+  </p>
+</section>
+
+</main>
+
+<script>
+// Highlight active rail link on scroll
+const sections = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('.rail a');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const a = document.querySelector(`.rail a[href="#${e.target.id}"]`);
+      if (a) a.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -75% 0px' });
+sections.forEach(s => obs.observe(s));
+</script>
+</body>
+</html>
